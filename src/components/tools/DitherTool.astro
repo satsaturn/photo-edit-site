@@ -1,0 +1,87 @@
+---
+// Dither — reduce an image to a limited palette with ordered or
+// error-diffusion dithering.
+// CSS and JS loaded from public/tools/dither/.
+---
+
+<div class="dither-tool">
+  <h2>Dither</h2>
+  <p class="description">
+    Reduce an image to a limited retro palette using Bayer, Floyd–Steinberg,
+    Atkinson, or simple threshold dithering.
+  </p>
+
+  <div class="panels">
+    <!-- INPUT -->
+    <div class="panel">
+      <div class="panel-label">Source Image</div>
+      <div class="panel-body drop-zone" id="dither-input-zone">
+        <input type="file" id="dither-upload" accept="image/*" />
+        <div class="zone-placeholder" id="dither-input-placeholder">
+          Drop image here<br />or click to browse
+        </div>
+        <img class="zone-preview" id="dither-input-preview" alt="source" />
+      </div>
+    </div>
+
+    <!-- CONTROL -->
+    <div class="panel">
+      <div class="panel-label">Settings</div>
+      <div class="panel-body" style="flex-direction: column; align-items: stretch; gap: 12px;">
+        <div class="setting">
+          <label for="dither-algorithm">Algorithm</label>
+          <select id="dither-algorithm">
+            <option value="bayer" selected>Bayer</option>
+            <option value="floyd-steinberg">Floyd–Steinberg</option>
+            <option value="atkinson">Atkinson</option>
+            <option value="threshold">Threshold</option>
+          </select>
+        </div>
+
+        <div class="setting">
+          <label for="dither-palette-size">Palette Size</label>
+          <input type="range" id="dither-palette-size" min="8" max="64" step="1" value="16" />
+          <input type="number" id="dither-palette-size-n" min="8" max="64" step="1" value="16" />
+        </div>
+
+        <div class="setting checkbox">
+          <input type="checkbox" id="dither-original-res" />
+          <label for="dither-original-res">Use original resolution</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- OUTPUT -->
+    <div class="panel">
+      <div class="panel-label">Output</div>
+      <div class="panel-body" id="dither-output-zone">
+        <div class="zone-placeholder" id="dither-output-placeholder">
+          Dithered image will appear here
+        </div>
+        <img class="zone-preview" id="dither-output-preview" alt="output" />
+      </div>
+    </div>
+  </div>
+
+  <div class="settings">
+    <div class="setting">
+      <label for="dither-target-width">Target Width</label>
+      <input type="range" id="dither-target-width" min="32" max="512" step="16" value="128" />
+      <input type="number" id="dither-target-width-n" min="32" max="512" step="16" value="128" />
+    </div>
+    <div class="setting">
+      <label for="dither-pixel-scale">Pixel Scale</label>
+      <input type="range" id="dither-pixel-scale" min="1" max="12" step="1" value="4" />
+      <input type="number" id="dither-pixel-scale-n" min="1" max="12" step="1" value="4" />
+    </div>
+  </div>
+
+  <div class="actions">
+    <button id="dither-convert" disabled>Dither</button>
+    <button id="dither-download">Download</button>
+  </div>
+
+  <div class="status" id="dither-status">Load an image to get started.</div>
+
+  <canvas id="dither-work-canvas"></canvas>
+</div>

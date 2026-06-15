@@ -1,0 +1,215 @@
+:root {
+  --dither-accent: #cc0000;
+  --dither-bg: #eee;
+  --dither-border: #aaa;
+  --dither-text: #222;
+  --dither-muted: #666;
+}
+
+.dither-tool {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.dither-tool h2 {
+  margin: 0;
+}
+
+.dither-tool .description {
+  margin: 0;
+  color: var(--dither-muted);
+  font-size: 0.85rem;
+}
+
+/* Three-panel layout */
+.dither-tool .panels {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  align-items: flex-start;
+}
+
+.dither-tool .panel {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.dither-tool .panel-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 8px 12px;
+  background: var(--dither-border);
+  color: #fff;
+  text-align: center;
+}
+
+.dither-tool .panel-body {
+  background: var(--dither-bg);
+  border: 1px solid var(--dither-border);
+  border-top: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  max-height: 55vh;
+  padding: 16px;
+}
+
+.dither-tool .drop-zone {
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.dither-tool .drop-zone:hover {
+  background: #f5f5f5;
+}
+
+.dither-tool .drop-zone input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.dither-tool .zone-placeholder {
+  color: #888;
+  font-size: 0.9rem;
+  text-align: center;
+  pointer-events: none;
+}
+
+.dither-tool .zone-preview {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: none;
+  position: relative;
+  z-index: 1;
+}
+
+.dither-tool canvas#dither-work-canvas {
+  display: none;
+}
+
+/* Settings */
+.dither-tool .settings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  background: var(--dither-bg);
+  border: 1px solid var(--dither-border);
+  padding: 16px;
+}
+
+.dither-tool .setting {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 160px;
+}
+
+.dither-tool .setting label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.dither-tool .setting select,
+.dither-tool .setting input[type="range"],
+.dither-tool .setting input[type="number"] {
+  width: 100%;
+}
+
+.dither-tool .setting select {
+  padding: 6px 8px;
+  font-size: 0.85rem;
+  border: 2px solid #111;
+  background: #fff;
+}
+
+.dither-tool .setting input[type="number"] {
+  padding: 6px 8px;
+  font-size: 0.85rem;
+  border: 2px solid #111;
+  background: #fff;
+  text-align: center;
+}
+
+.dither-tool .setting input[type="range"] {
+  accent-color: var(--dither-accent);
+}
+
+.dither-tool .setting.checkbox {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.dither-tool .setting.checkbox input {
+  width: auto;
+}
+
+/* Actions */
+.dither-tool .actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.dither-tool button {
+  padding: 8px 24px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: 2px solid #111;
+  background: var(--dither-accent);
+  color: #fff;
+}
+
+.dither-tool button:hover {
+  background: #aa0000;
+}
+
+.dither-tool button:disabled {
+  background: #ccc;
+  border-color: #888;
+  color: #888;
+  cursor: not-allowed;
+}
+
+.dither-tool #dither-download {
+  display: none;
+  background: #fff;
+  color: #111;
+}
+
+.dither-tool #dither-download:hover {
+  background: #f5f5f5;
+}
+
+/* Status */
+.dither-tool .status {
+  font-size: 0.85rem;
+  color: #555;
+  min-height: 1.4em;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .dither-tool .panels {
+    flex-direction: column;
+  }
+}
