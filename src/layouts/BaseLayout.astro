@@ -1,15 +1,16 @@
 ---
 // Shared layout: thin header, left sidebar, main content area.
-// Used by every page in the app.
+// Used by every page in the app. Do not add per-page layouts.
 
 const { title = 'Photo Edit Site' } = Astro.props;
 
-// Vertical list of available tools shown in the sidebar.
+// Add new tools here. Each entry creates a sidebar link.
+// The href must start with the base path: /photo-edit-site/
 const tools = [
   { name: 'Example Tool', href: '/photo-edit-site/editor/' },
 ];
 
-// Determine the active page for sidebar highlighting.
+// Current path for sidebar active-state highlighting.
 const currentPath = Astro.url.pathname;
 ---
 
