@@ -1,0 +1,52 @@
+---
+// Shared layout: thin header, left sidebar, main content area.
+// Used by every page in the app.
+
+const { title = 'Photo Edit Site' } = Astro.props;
+
+// Vertical list of available tools shown in the sidebar.
+const tools = [
+  { name: 'Example Tool', href: '/photo-edit-site/editor/' },
+];
+
+// Determine the active page for sidebar highlighting.
+const currentPath = Astro.url.pathname;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <link rel="stylesheet" href={`${import.meta.env.BASE_URL}styles/global.css`} />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="app-header">
+        <span>Photo Edit Site</span>
+      </header>
+
+      <aside class="app-sidebar">
+        <nav aria-label="Tools">
+          <ul class="tool-list">
+            <li>
+              <a href={`${import.meta.env.BASE_URL}`} aria-current={currentPath === '/photo-edit-site/' ? 'page' : undefined}>Home</a>
+            </li>
+            {tools.map((tool) => (
+              <li>
+                <a href={tool.href} aria-current={currentPath.startsWith(tool.href) ? 'page' : undefined}>
+                  {tool.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </aside>
+
+      <main class="app-main">
+        <slot />
+      </main>
+    </div>
+  </body>
+</html>
