@@ -22,15 +22,15 @@
 .channel-nodes .panels {
   position: relative;
   display: flex;
-  gap: 80px;
+  gap: 36px;
   width: 100%;
   align-items: flex-start;
   justify-content: center;
 }
 
 .channel-nodes .panel {
-  flex: 0 0 720px;
-  max-width: 720px;
+  flex: 1 1 0;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -55,9 +55,10 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  overflow: hidden;
-  width: 720px;
-  height: 540px;
+  overflow: visible;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  max-height: 60vh;
   padding: 16px;
 }
 
@@ -77,19 +78,19 @@
   z-index: 2;
 }
 
-/* Input canvas hidden until image loaded. Output canvas always visible. */
+/* Input canvas hidden until image loaded. Output canvas always visible.
+   max-width/height scales the canvas element visually; the internal
+   pixel buffer stays at the source image resolution. */
 .channel-nodes canvas#cn-input-canvas {
   display: none;
   max-width: 100%;
   max-height: 100%;
-  object-fit: contain;
   position: relative;
   z-index: 1;
 }
 .channel-nodes canvas#cn-output-canvas {
   max-width: 100%;
   max-height: 100%;
-  object-fit: contain;
   position: relative;
   z-index: 1;
 }

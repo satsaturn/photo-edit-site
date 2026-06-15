@@ -131,7 +131,9 @@
 
   function loadImage(file) {
     const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
     img.onload = () => {
+      URL.revokeObjectURL(objectUrl);
       inputCanvas.width = img.width;
       inputCanvas.height = img.height;
       outputCanvas.width = img.width;
@@ -144,7 +146,11 @@
       requestAnimationFrame(renderConnections);
       updateStatus();
     };
-    img.src = URL.createObjectURL(file);
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      setStatus('Could not load image. Please try a different file.');
+    };
+    img.src = objectUrl;
   }
 
   function applyChannels() {

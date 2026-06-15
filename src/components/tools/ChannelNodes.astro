@@ -20,11 +20,12 @@
         <div class="zone-placeholder" id="cn-input-placeholder">
           Click or drop an image
         </div>
-      </div>
-      <div class="cn-dots cn-dots-out">
-        <div class="cn-dot red"   data-side="in" data-channel="r" title="Red"></div>
-        <div class="cn-dot green" data-side="in" data-channel="g" title="Green"></div>
-        <div class="cn-dot blue"  data-side="in" data-channel="b" title="Blue"></div>
+        <!-- Dots are inside panel-body so they stay centred on the image area. -->
+        <div class="cn-dots cn-dots-out">
+          <div class="cn-dot red" data-side="in" data-channel="r" title="Red"></div>
+          <div class="cn-dot green" data-side="in" data-channel="g" title="Green"></div>
+          <div class="cn-dot blue" data-side="in" data-channel="b" title="Blue"></div>
+        </div>
       </div>
     </div>
 
@@ -33,11 +34,11 @@
       <div class="panel-label">Output</div>
       <div class="panel-body drop-zone drop-zone-readonly">
         <canvas id="cn-output-canvas"></canvas>
-      </div>
-      <div class="cn-dots cn-dots-in">
-        <div class="cn-dot red"   data-side="out" data-channel="r" title="Red"></div>
-        <div class="cn-dot green" data-side="out" data-channel="g" title="Green"></div>
-        <div class="cn-dot blue"  data-side="out" data-channel="b" title="Blue"></div>
+        <div class="cn-dots cn-dots-in">
+          <div class="cn-dot red" data-side="out" data-channel="r" title="Red"></div>
+          <div class="cn-dot green" data-side="out" data-channel="g" title="Green"></div>
+          <div class="cn-dot blue" data-side="out" data-channel="b" title="Blue"></div>
+        </div>
       </div>
     </div>
 
