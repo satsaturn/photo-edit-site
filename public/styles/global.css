@@ -1,14 +1,14 @@
 :root {
   /* Random greys, minimal palette. */
-  --bg-body: #222;
-  --bg-header: #333;
-  --bg-sidebar: #2a2a2a;
-  --bg-main: #3a3a3a;
-  --bg-tool: #444;
-  --text: #ddd;
-  --text-muted: #aaa;
-  --border: #555;
-  --accent: #666;
+  --bg-body: #d0d0d0;
+  --bg-header: #b8b8b8;
+  --bg-sidebar: #c4c4c4;
+  --bg-main: #d8d8d8;
+  --bg-tool: #e0e0e0;
+  --text: #222;
+  --text-muted: #555;
+  --border: #aaa;
+  --accent: #999;
 
   /* Layout dimensions. */
   --header-height: 2rem;
