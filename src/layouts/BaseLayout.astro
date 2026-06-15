@@ -4,14 +4,15 @@
 
 const { title = 'Photo Edit Site' } = Astro.props;
 
-// Add new tools here. Each entry creates a sidebar link.
-// The href must start with the base path: /photo-edit-site/
+// Add new tools here. The href is relative to the base path.
+// Rendered links prepend import.meta.env.BASE_URL automatically.
 const tools = [
-  { name: 'Example Tool', href: '/photo-edit-site/editor/' },
+  { name: 'Example Tool', path: 'editor/' },
 ];
 
 // Current path for sidebar active-state highlighting.
 const currentPath = Astro.url.pathname;
+const base = import.meta.env.BASE_URL;
 ---
 
 <html lang="en">
@@ -19,8 +20,10 @@ const currentPath = Astro.url.pathname;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
+    <link rel="icon" href={`${base}favicon.svg`} type="image/svg+xml" />
+    <link rel="icon" href={`${base}favicon.ico`} sizes="any" />
     <title>{title}</title>
-    <link rel="stylesheet" href={`${import.meta.env.BASE_URL}styles/global.css`} />
+    <link rel="stylesheet" href={`${base}styles/global.css`} />
   </head>
   <body>
     <div class="app-shell">
@@ -32,15 +35,18 @@ const currentPath = Astro.url.pathname;
         <nav aria-label="Tools">
           <ul class="tool-list">
             <li>
-              <a href={`${import.meta.env.BASE_URL}`} aria-current={currentPath === '/photo-edit-site/' ? 'page' : undefined}>Home</a>
+              <a href={base} aria-current={currentPath === base ? 'page' : undefined}>Home</a>
             </li>
-            {tools.map((tool) => (
-              <li>
-                <a href={tool.href} aria-current={currentPath.startsWith(tool.href) ? 'page' : undefined}>
-                  {tool.name}
-                </a>
-              </li>
-            ))}
+            {tools.map((tool) => {
+              const href = `${base}${tool.path}`;
+              return (
+                <li>
+                  <a href={href} aria-current={currentPath.startsWith(href) ? 'page' : undefined}>
+                    {tool.name}
+                  </a>
+                </li>
+              );
+            })}
           </ul>
         </nav>
       </aside>

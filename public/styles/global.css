@@ -5,7 +5,6 @@
   --bg-header: #b8b8b8;
   --bg-sidebar: #c4c4c4;
   --bg-main: #d8d8d8;
-  --bg-tool: #e0e0e0;
   --text: #222;
   --text-muted: #555;
   --border: #aaa;
@@ -100,6 +99,12 @@ body {
 .tool-list a:hover,
 .tool-list button:hover {
   background-color: var(--accent);
+}
+
+.tool-list a:focus-visible,
+.tool-list button:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: -2px;
 }
 
 .tool-list a[aria-current='page'],
