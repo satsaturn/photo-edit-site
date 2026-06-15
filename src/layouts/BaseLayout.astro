@@ -8,6 +8,8 @@ const { title = 'Photo Edit Site' } = Astro.props;
 // Rendered links prepend import.meta.env.BASE_URL automatically.
 const tools = [
   { name: 'Example Tool', path: 'editor/' },
+  { name: 'Pixelate', path: 'pixelate/' },
+  { name: 'Channel Nodes', path: 'channel-nodes/' },
 ];
 
 // Current path for sidebar active-state highlighting.
@@ -24,6 +26,7 @@ const base = import.meta.env.BASE_URL;
     <link rel="icon" href={`${base}favicon.ico`} sizes="any" />
     <title>{title}</title>
     <link rel="stylesheet" href={`${base}styles/global.css`} />
+    <slot name="head" />
   </head>
   <body>
     <div class="app-shell">

@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PixelateTool from '../components/tools/PixelateTool.astro';
+
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout title="Pixelate | Photo Edit Site">
+  <link slot="head" href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap" rel="stylesheet" />
+  <link slot="head" rel="stylesheet" href={`${base}tools/pixelate/styles.css`} />
+
+  <PixelateTool />
+
+  <script src={`${base}tools/pixelate/engine.js`} defer></script>
+</BaseLayout>

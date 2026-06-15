@@ -22,6 +22,11 @@ Add new tools by:
 2. Creating a component in `src/components/tools/`
 3. Rendering it on a page in `src/pages/`
 
+Tool-specific CSS/JS:
+- Static assets (CSS, JS, fonts) go in `public/tools/<tool-name>/`
+- Load them via `<link slot="head">` and `<script src="" defer>` in the page component
+- Scope all CSS under `.tool-name` to avoid conflicts with the layout
+
 ## Styling
 
 - Light grey palette, minimal, no frills
@@ -38,7 +43,5 @@ Add new tools by:
 
 - [x] Basic structure and layout
 - [x] Example tool placeholder
-- [ ] Image upload / canvas shell
-- [ ] First real effect (e.g. pixel sort)
-- [ ] Download / export
+- [x] Pixelate tool (Pixless Camera Emulator)
 - [ ] More effects

@@ -1,0 +1,325 @@
+/* Pixless Camera Emulator — scoped under .pixelate-tool to avoid layout conflicts. */
+
+.pixelate-tool {
+  font-family: 'Silkscreen', monospace;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.pixelate-tool h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #cc0000;
+  margin-bottom: 6px;
+}
+
+.pixelate-tool .subtitle {
+  font-size: 0.72rem;
+  color: #444;
+  margin-bottom: 28px;
+  letter-spacing: 0.03em;
+  text-align: center;
+  line-height: 2;
+}
+.pixelate-tool .subtitle a { color: #cc0000; text-decoration: none; }
+.pixelate-tool .subtitle a:hover { text-decoration: underline; }
+
+/* Panels layout */
+.pixelate-tool .panels {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  max-width: 960px;
+  margin-bottom: 20px;
+  align-items: flex-start;
+}
+.pixelate-tool .panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.pixelate-tool .panel-img { flex: 1; }
+.pixelate-tool .panel-pal { width: 200px; flex-shrink: 0; }
+.pixelate-tool .panel-out { flex: 1; }
+
+/* Panel labels */
+.pixelate-tool .panel-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: #cc0000;
+  color: #fff;
+  padding: 5px 8px;
+  border: 3px solid #111;
+  box-shadow: 3px 3px 0 #111;
+  text-align: center;
+}
+
+/* Drop zones */
+.pixelate-tool .drop-zone {
+  border: 3px solid #111;
+  box-shadow: 4px 4px 0 #111;
+  background: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.1s, box-shadow 0.1s, transform 0.1s;
+  position: relative;
+  overflow: hidden;
+}
+.pixelate-tool .drop-zone:hover {
+  background: #fff0f0;
+  box-shadow: 4px 4px 0 #cc0000;
+  transform: translate(-1px, -1px);
+}
+.pixelate-tool .drop-zone.drag-over {
+  background: #ffe0e0;
+  box-shadow: 4px 4px 0 #cc0000;
+  border-color: #cc0000;
+}
+
+.pixelate-tool .drop-text {
+  font-size: 0.72rem;
+  color: #666;
+  text-align: center;
+  padding: 0 10px;
+  line-height: 1.8;
+  font-family: 'Silkscreen', monospace;
+}
+
+.pixelate-tool .drop-zone input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.pixelate-tool .panel-img .drop-zone,
+.pixelate-tool .panel-out .drop-zone { min-height: 220px; }
+.pixelate-tool .panel-pal .drop-zone { min-height: 130px; }
+
+.pixelate-tool .zone-preview {
+  max-width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  padding: 8px;
+  display: none;
+  position: relative;
+  z-index: 1;
+}
+
+.pixelate-tool .palette-preview {
+  display: none;
+  flex-wrap: wrap;
+  gap: 3px;
+  padding: 8px 10px;
+  justify-content: center;
+  max-height: 90px;
+  overflow-y: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.pixelate-tool .swatch {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #111;
+}
+
+.pixelate-tool .palette-name {
+  display: none;
+  font-size: 0.62rem;
+  color: #cc0000;
+  font-weight: 700;
+  text-align: center;
+  padding: 6px 8px 0;
+  position: relative;
+  z-index: 1;
+  font-family: 'Silkscreen', monospace;
+}
+
+.pixelate-tool .zone-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px;
+  gap: 6px;
+}
+
+/* Clear palette button */
+.pixelate-tool #clear-palette-btn {
+  display: none;
+  width: 100%;
+  padding: 7px 0;
+  background: #fff;
+  color: #111;
+  border: 3px solid #111;
+  box-shadow: 3px 3px 0 #111;
+  font-family: 'Silkscreen', monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  transition: box-shadow 0.1s, transform 0.1s;
+}
+.pixelate-tool #clear-palette-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 #cc0000;
+}
+.pixelate-tool #clear-palette-btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #111;
+}
+
+.pixelate-tool .lospec-link {
+  font-size: 0.68rem;
+  text-align: center;
+  font-family: 'Silkscreen', monospace;
+}
+.pixelate-tool .lospec-link a { color: #cc0000; text-decoration: none; }
+.pixelate-tool .lospec-link a:hover { text-decoration: underline; }
+
+/* Output zone — no hover effects */
+.pixelate-tool #output-zone { cursor: default; }
+.pixelate-tool #output-zone:hover {
+  background: #f5f5f5;
+  box-shadow: 4px 4px 0 #111;
+  transform: none;
+}
+
+/* Settings bar */
+.pixelate-tool .settings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  width: 100%;
+  max-width: 960px;
+  background: #f5f5f5;
+  border: 3px solid #111;
+  box-shadow: 4px 4px 0 #111;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+}
+
+.pixelate-tool .setting {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+  min-width: 130px;
+}
+
+.pixelate-tool .setting label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #111;
+  font-family: 'Silkscreen', monospace;
+}
+
+.pixelate-tool .setting-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* Inputs */
+.pixelate-tool input[type="range"] {
+  width: 100%;
+  cursor: pointer;
+  accent-color: #cc0000;
+}
+
+.pixelate-tool input[type="number"] {
+  width: 100%;
+  background: #fff;
+  border: 3px solid #111;
+  box-shadow: 2px 2px 0 #111;
+  color: #cc0000;
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  text-align: center;
+  font-family: 'Silkscreen', monospace;
+  font-weight: 700;
+  -moz-appearance: textfield;
+  outline: none;
+  transition: box-shadow 0.1s, transform 0.1s;
+}
+
+.pixelate-tool input[type="number"]::-webkit-inner-spin-button,
+.pixelate-tool input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+.pixelate-tool input[type="number"]:focus {
+  border-color: #cc0000;
+  box-shadow: 2px 2px 0 #cc0000;
+  transform: translate(-1px, -1px);
+}
+
+/* Buttons */
+.pixelate-tool .btn-row {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.pixelate-tool button {
+  padding: 10px 28px;
+  border: 3px solid #111;
+  font-family: 'Silkscreen', monospace;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: box-shadow 0.1s, transform 0.1s;
+}
+
+.pixelate-tool button:hover { transform: translate(-2px, -2px); }
+.pixelate-tool button:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #111 !important;
+}
+
+.pixelate-tool #convert-btn {
+  background: #cc0000;
+  color: #fff;
+  box-shadow: 4px 4px 0 #111;
+}
+.pixelate-tool #convert-btn:hover { box-shadow: 6px 6px 0 #111; }
+.pixelate-tool #convert-btn:disabled {
+  background: #ccc;
+  color: #888;
+  cursor: not-allowed;
+  box-shadow: 4px 4px 0 #aaa;
+  transform: none;
+}
+
+.pixelate-tool #download-btn {
+  background: #fff;
+  color: #111;
+  box-shadow: 4px 4px 0 #111;
+  display: none;
+}
+.pixelate-tool #download-btn:hover { box-shadow: 6px 6px 0 #111; }
+
+/* Status line */
+.pixelate-tool .status {
+  font-size: 0.72rem;
+  color: #444;
+  min-height: 1.4em;
+  font-family: 'Silkscreen', monospace;
+  letter-spacing: 0.04em;
+}

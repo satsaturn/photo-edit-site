@@ -1,0 +1,99 @@
+---
+// Pixless Camera Emulator — pixel-art image converter.
+// CSS and JS loaded from public/tools/pixelate/.
+---
+
+<div class="pixelate-tool">
+  <h1>[ Pixless Camera Emulator ]</h1>
+  <p class="subtitle">
+    Pixel-art image converter · inspired by <a href="https://www.kickstarter.com/projects/carloandreini/pixless-camera" target="_blank">Carlo's Pixless Camera</a><br>
+    Original Python code by <a href="https://github.com/cnmoro/pixel-camera-simulator" target="_blank"><strong>Carlo Moro · cnmoro</strong></a>
+  </p>
+
+  <div class="panels">
+    <!-- INPUT -->
+    <div class="panel panel-img">
+      <div class="panel-label">[ Source Image ]</div>
+      <div class="drop-zone" id="input-zone">
+        <input type="file" id="img-input" accept="image/*" />
+        <div class="zone-placeholder" id="input-placeholder">
+          <div class="drop-text">Drop image here<br />or click to browse</div>
+        </div>
+        <img class="zone-preview" id="input-preview" alt="source" />
+      </div>
+    </div>
+
+    <!-- PALETTE -->
+    <div class="panel panel-pal">
+      <div class="panel-label">[ Palette ]</div>
+      <div class="drop-zone" id="palette-zone">
+        <input type="file" id="palette-input" accept=".txt,.hex" />
+        <div class="zone-placeholder" id="palette-placeholder">
+          <div class="drop-text">Drop a .txt or .hex<br />palette file here<br /><br /><span style="color:#aaa">Leave empty for<br />auto-colour</span></div>
+        </div>
+        <div class="palette-name" id="palette-name"></div>
+        <div class="palette-preview" id="palette-preview"></div>
+      </div>
+      <button id="clear-palette-btn">X Clear Palette</button>
+      <div class="lospec-link"><a href="https://lospec.com/palette-list" target="_blank">Browse palettes on Lospec</a></div>
+    </div>
+
+    <!-- OUTPUT -->
+    <div class="panel panel-out">
+      <div class="panel-label">[ Output ]</div>
+      <div class="drop-zone" id="output-zone">
+        <div class="zone-placeholder" id="output-placeholder">
+          <div class="drop-text">Your pixelated image<br />will appear here</div>
+        </div>
+        <img class="zone-preview" id="output-preview" alt="output" />
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="settings">
+    <div class="setting">
+      <label>Target Width</label>
+      <div class="setting-controls">
+        <input type="range" id="target-width" min="32" max="512" step="16" value="128" />
+        <input type="number" id="target-width-n" min="32" max="512" step="16" value="128" />
+      </div>
+    </div>
+    <div class="setting">
+      <label>Palette Size</label>
+      <div class="setting-controls">
+        <input type="range" id="palette-size" min="2" max="64" step="2" value="16" />
+        <input type="number" id="palette-size-n" min="2" max="64" step="2" value="16" />
+      </div>
+    </div>
+    <div class="setting">
+      <label>Brightness</label>
+      <div class="setting-controls">
+        <input type="range" id="brightness" min="0.2" max="2.5" step="0.05" value="1.0" />
+        <input type="number" id="brightness-n" min="0.2" max="2.5" step="0.05" value="1.00" />
+      </div>
+    </div>
+    <div class="setting">
+      <label>Contrast</label>
+      <div class="setting-controls">
+        <input type="range" id="contrast" min="0.2" max="2.5" step="0.05" value="1.0" />
+        <input type="number" id="contrast-n" min="0.2" max="2.5" step="0.05" value="1.00" />
+      </div>
+    </div>
+    <div class="setting">
+      <label>Pixel Scale</label>
+      <div class="setting-controls">
+        <input type="range" id="pixel-scale" min="1" max="12" step="1" value="4" />
+        <input type="number" id="pixel-scale-n" min="1" max="12" step="1" value="4" />
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button id="convert-btn" disabled>[ Convert ]</button>
+    <button id="download-btn">[ Download ]</button>
+  </div>
+  <div class="status" id="status">&gt; Load an image to get started.</div>
+
+  <canvas id="offscreen" style="display:none"></canvas>
+</div>
