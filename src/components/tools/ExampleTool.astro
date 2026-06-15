@@ -1,6 +1,167 @@
 ---
-// Placeholder tool to demonstrate the tool UI area.
+// EXAMPLE TOOL — Reference template for building new tools.
+//
+// Layout pattern:
+//   [ Input ]  [ Main Control ]  [ Output ]
+//            [ Settings below ]
+//
+// To create a new tool:
+//   1. Copy this file and rename it (e.g. MyTool.astro)
+//   2. Copy the <style> block and rename the class (e.g. .my-tool)
+//   3. Update the HTML structure below
+//   4. Add a page in src/pages/ that imports your component
+//   5. Add the tool to the sidebar in BaseLayout.astro
+//
+// CSS is scoped via <style> — Astro automatically prefixes it.
+// For heavier CSS, use a separate file in public/tools/<name>/ and
+// load it via <link slot="head"> in the page component.
 ---
 
-<h2>Example Tool</h2>
-<p>This is where a tool's interface will live.</p>
+<div class="example-tool">
+  <h2>Example Tool</h2>
+  <p class="description">A reference layout for building new tools. Three panels across, settings below.</p>
+
+  <div class="panels">
+    <!-- INPUT PANEL: file upload, drag-and-drop, or source selector -->
+    <div class="panel panel-input">
+      <div class="panel-label">Input</div>
+      <div class="panel-body">
+        <p>Source / upload area</p>
+      </div>
+    </div>
+
+    <!-- MAIN CONTROL PANEL: the primary tool controls -->
+    <div class="panel panel-control">
+      <div class="panel-label">Control</div>
+      <div class="panel-body">
+        <p>Main controls go here</p>
+      </div>
+    </div>
+
+    <!-- OUTPUT PANEL: preview or result -->
+    <div class="panel panel-output">
+      <div class="panel-label">Output</div>
+      <div class="panel-body">
+        <p>Result / preview area</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS BAR: secondary options, sliders, toggles -->
+  <div class="settings">
+    <div class="setting">
+      <label>Setting A</label>
+      <input type="range" min="0" max="100" value="50" />
+    </div>
+    <div class="setting">
+      <label>Setting B</label>
+      <input type="range" min="0" max="100" value="50" />
+    </div>
+  </div>
+
+  <!-- ACTION BUTTONS -->
+  <div class="actions">
+    <button>Run</button>
+  </div>
+</div>
+
+<style>
+  /* Scoped to .example-tool — no conflicts with layout or other tools. */
+  .example-tool {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .example-tool .description {
+    color: #666;
+    font-size: 0.85rem;
+  }
+
+  /* Three panels side by side */
+  .example-tool .panels {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .example-tool .panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .example-tool .panel-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 6px 10px;
+    background: #aaa;
+    color: #fff;
+    text-align: center;
+  }
+
+  .example-tool .panel-body {
+    background: #eee;
+    border: 1px solid #aaa;
+    border-top: none;
+    padding: 16px;
+    min-height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    font-size: 0.85rem;
+  }
+
+  /* Settings bar below panels */
+  .example-tool .settings {
+    display: flex;
+    gap: 16px;
+    background: #eee;
+    border: 1px solid #aaa;
+    padding: 12px 16px;
+  }
+
+  .example-tool .setting {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+  }
+
+  .example-tool .setting label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .example-tool input[type="range"] {
+    width: 100%;
+    accent-color: #cc0000;
+  }
+
+  /* Action buttons */
+  .example-tool .actions {
+    display: flex;
+    gap: 12px;
+  }
+
+  .example-tool button {
+    padding: 8px 24px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: 2px solid #111;
+    background: #cc0000;
+    color: #fff;
+  }
+
+  .example-tool button:hover {
+    background: #aa0000;
+  }
+</style>

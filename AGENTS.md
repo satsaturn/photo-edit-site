@@ -22,6 +22,12 @@ Add new tools by:
 2. Creating a component in `src/components/tools/`
 3. Rendering it on a page in `src/pages/`
 
+Tool layout pattern (see `ExampleTool.astro` for a full reference):
+```
+[ Input ]  [ Main Control ]  [ Output ]
+         [ Settings below ]
+```
+
 Tool-specific CSS/JS:
 - Static assets (CSS, JS, fonts) go in `public/tools/<tool-name>/`
 - Load them via `<link slot="head">` and `<script src="" defer>` in the page component

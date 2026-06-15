@@ -1,0 +1,207 @@
+/* Channel Nodes — scoped under .channel-nodes to avoid layout conflicts. */
+
+.channel-nodes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.channel-nodes h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin: 0 0 6px;
+}
+
+.channel-nodes .subtitle {
+  font-size: 0.9rem;
+  color: #555;
+  margin: 0 0 24px;
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* Panels layout — two boxes with space between for connection lines. */
+.channel-nodes .panels {
+  position: relative;
+  display: flex;
+  gap: 160px;
+  width: 100%;
+  max-width: 1100px;
+  margin-bottom: 24px;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.channel-nodes .panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  flex: 0 0 440px;
+  max-width: 440px;
+}
+
+.channel-nodes .panel-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: #cc0000;
+  color: #fff;
+  padding: 8px 12px;
+  border: 3px solid #111;
+  box-shadow: 3px 3px 0 #111;
+  text-align: center;
+}
+
+/* Image boxes — fixed size so the layout doesn't shift when an
+   image is loaded. */
+.channel-nodes .drop-zone {
+  position: relative;
+  border: 3px solid #111;
+  box-shadow: 4px 4px 0 #111;
+  background: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.1s, box-shadow 0.1s, transform 0.1s;
+  overflow: hidden;
+  width: 440px;
+  height: 360px;
+}
+
+.channel-nodes .drop-zone:hover {
+  background: #fff0f0;
+  box-shadow: 4px 4px 0 #cc0000;
+  transform: translate(-1px, -1px);
+}
+
+.channel-nodes .drop-zone-readonly {
+  cursor: default;
+}
+.channel-nodes .drop-zone-readonly:hover {
+  background: #f5f5f5;
+  box-shadow: 4px 4px 0 #111;
+  transform: none;
+}
+
+.channel-nodes .drop-zone input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
+/* The input canvas is hidden until an image is loaded.
+   The output canvas is always visible (just empty before an image). */
+.channel-nodes .drop-zone canvas#cn-input-canvas {
+  display: none;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  position: relative;
+  z-index: 1;
+}
+
+.channel-nodes .drop-zone canvas#cn-output-canvas {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  position: relative;
+  z-index: 1;
+}
+
+.channel-nodes .zone-placeholder {
+  font-size: 0.9rem;
+  color: #666;
+  text-align: center;
+  padding: 14px;
+  line-height: 1.6;
+}
+
+/* Channel dots — sit on the box outline, three coloured circles. */
+.channel-nodes .cn-dots {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  z-index: 3;
+}
+.channel-nodes .cn-dots-out { right: -15px; }
+.channel-nodes .cn-dots-in { left: -15px; }
+
+.channel-nodes .cn-dot {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 3px solid #111;
+  box-shadow: 2px 2px 0 #111;
+  cursor: crosshair;
+  background: #fff;
+}
+.channel-nodes .cn-dot.red   { background: #cc0000; }
+.channel-nodes .cn-dot.green { background: #27ae60; }
+.channel-nodes .cn-dot.blue  { background: #2980b9; }
+
+/* SVG overlay for connection lines. */
+.channel-nodes #cn-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+.channel-nodes #cn-svg .cn-hit {
+  pointer-events: stroke;
+  cursor: pointer;
+}
+.channel-nodes #cn-svg .cn-line {
+  pointer-events: none;
+}
+
+/* Buttons */
+.channel-nodes .btn-row {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.channel-nodes button {
+  padding: 8px 22px;
+  border: 2px solid #111;
+  background: #fff;
+  color: #111;
+  box-shadow: 3px 3px 0 #111;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: box-shadow 0.1s, transform 0.1s;
+}
+.channel-nodes button:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 #111; }
+.channel-nodes button:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #111;
+}
+.channel-nodes button:disabled {
+  background: #ccc;
+  color: #888;
+  cursor: not-allowed;
+  box-shadow: 3px 3px 0 #aaa;
+  transform: none;
+}
+
+/* Status line */
+.channel-nodes .status {
+  font-size: 0.85rem;
+  color: #555;
+  min-height: 1.4em;
+}
