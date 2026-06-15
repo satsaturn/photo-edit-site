@@ -1,92 +1,73 @@
-/* Channel Nodes — scoped under .channel-nodes to avoid layout conflicts. */
+/* Channel Nodes — scoped under .channel-nodes. Matches the project's
+   standard light-grey, minimal style (see ExampleTool.astro). */
 
 .channel-nodes {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  gap: 12px;
   width: 100%;
 }
 
-.channel-nodes h1 {
-  font-size: 1.6rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  margin: 0 0 6px;
+.channel-nodes h2 {
+  margin: 0;
 }
 
-.channel-nodes .subtitle {
-  font-size: 0.9rem;
-  color: #555;
-  margin: 0 0 24px;
-  text-align: center;
-  line-height: 1.6;
+.channel-nodes .description {
+  margin: 0;
+  color: #666;
+  font-size: 0.85rem;
 }
 
-/* Panels layout — two boxes with space between for connection lines. */
+/* Panels row */
 .channel-nodes .panels {
   position: relative;
   display: flex;
-  gap: 160px;
+  gap: 80px;
   width: 100%;
-  max-width: 1100px;
-  margin-bottom: 24px;
   align-items: flex-start;
   justify-content: center;
 }
 
 .channel-nodes .panel {
+  flex: 0 0 720px;
+  max-width: 720px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
   position: relative;
-  flex: 0 0 440px;
-  max-width: 440px;
 }
 
 .channel-nodes .panel-label {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  background: #cc0000;
+  letter-spacing: 0.05em;
+  padding: 6px 10px;
+  background: #aaa;
   color: #fff;
-  padding: 8px 12px;
-  border: 3px solid #111;
-  box-shadow: 3px 3px 0 #111;
   text-align: center;
 }
 
-/* Image boxes — fixed size so the layout doesn't shift when an
-   image is loaded. */
-.channel-nodes .drop-zone {
-  position: relative;
-  border: 3px solid #111;
-  box-shadow: 4px 4px 0 #111;
-  background: #f5f5f5;
+.channel-nodes .panel-body {
+  background: #eee;
+  border: 1px solid #aaa;
+  border-top: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: background 0.1s, box-shadow 0.1s, transform 0.1s;
+  position: relative;
   overflow: hidden;
-  width: 440px;
-  height: 360px;
+  width: 720px;
+  height: 540px;
+  padding: 16px;
 }
 
-.channel-nodes .drop-zone:hover {
-  background: #fff0f0;
-  box-shadow: 4px 4px 0 #cc0000;
-  transform: translate(-1px, -1px);
+/* Drop zone on input */
+.channel-nodes .drop-zone {
+  cursor: pointer;
+  transition: background 0.1s;
 }
-
-.channel-nodes .drop-zone-readonly {
-  cursor: default;
-}
-.channel-nodes .drop-zone-readonly:hover {
-  background: #f5f5f5;
-  box-shadow: 4px 4px 0 #111;
-  transform: none;
-}
+.channel-nodes .drop-zone:hover { background: #f5f5f5; }
+.channel-nodes .drop-zone-readonly { cursor: default; }
 
 .channel-nodes .drop-zone input[type="file"] {
   position: absolute;
@@ -96,9 +77,8 @@
   z-index: 2;
 }
 
-/* The input canvas is hidden until an image is loaded.
-   The output canvas is always visible (just empty before an image). */
-.channel-nodes .drop-zone canvas#cn-input-canvas {
+/* Input canvas hidden until image loaded. Output canvas always visible. */
+.channel-nodes canvas#cn-input-canvas {
   display: none;
   max-width: 100%;
   max-height: 100%;
@@ -106,8 +86,7 @@
   position: relative;
   z-index: 1;
 }
-
-.channel-nodes .drop-zone canvas#cn-output-canvas {
+.channel-nodes canvas#cn-output-canvas {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
@@ -116,40 +95,85 @@
 }
 
 .channel-nodes .zone-placeholder {
-  font-size: 0.9rem;
-  color: #666;
+  color: #888;
+  font-size: 0.85rem;
   text-align: center;
-  padding: 14px;
-  line-height: 1.6;
+  pointer-events: none;
 }
 
-/* Channel dots — sit on the box outline, three coloured circles. */
+/* Channel dots — on the box outline */
 .channel-nodes .cn-dots {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
   z-index: 3;
 }
-.channel-nodes .cn-dots-out { right: -15px; }
-.channel-nodes .cn-dots-in { left: -15px; }
+.channel-nodes .cn-dots-out { right: -18px; }
+.channel-nodes .cn-dots-in { left: -18px; }
 
 .channel-nodes .cn-dot {
-  width: 30px;
-  height: 30px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  border: 3px solid #111;
-  box-shadow: 2px 2px 0 #111;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 1px #111;
   cursor: crosshair;
-  background: #fff;
+  position: relative;
+  transition: transform 0.12s, box-shadow 0.12s, opacity 0.12s;
 }
+
+/* Subtle pulse on load to draw the eye. */
+@keyframes cn-pulse {
+  0%, 100% { box-shadow: 0 0 0 1px #111; }
+  50%      { box-shadow: 0 0 0 1px #111, 0 0 0 6px rgba(0,0,0,0.08); }
+}
+.channel-nodes .cn-dot {
+  animation: cn-pulse 2.4s ease-in-out 1;
+}
+
 .channel-nodes .cn-dot.red   { background: #cc0000; }
 .channel-nodes .cn-dot.green { background: #27ae60; }
 .channel-nodes .cn-dot.blue  { background: #2980b9; }
 
-/* SVG overlay for connection lines. */
+/* Output dots are hollow by default; an inner pip shows the mapped
+   source colour. */
+.channel-nodes .cn-dot[data-side="out"]::after {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  background: #fff;
+  transition: background 0.15s, transform 0.15s;
+}
+.channel-nodes .cn-dot[data-side="out"][data-channel="r"]::after { background: #f4cccc; }
+.channel-nodes .cn-dot[data-side="out"][data-channel="g"]::after { background: #cdeacd; }
+.channel-nodes .cn-dot[data-side="out"][data-channel="b"]::after { background: #c9daf0; }
+
+.channel-nodes .cn-dot.mapped-r::after { background: #cc0000; }
+.channel-nodes .cn-dot.mapped-g::after { background: #27ae60; }
+.channel-nodes .cn-dot.mapped-b::after { background: #2980b9; }
+.channel-nodes .cn-dot.mapped-mix::after { background: conic-gradient(#cc0000 0deg 120deg, #27ae60 120deg 240deg, #2980b9 240deg 360deg); }
+
+/* Drag-time feedback */
+.channel-nodes.dragging .cn-dot {
+  animation: none;
+}
+.channel-nodes.dragging .cn-dot.drag-source {
+  transform: scale(1.15);
+  box-shadow: 0 0 0 1px #111, 0 0 0 6px rgba(0,0,0,0.2);
+}
+.channel-nodes.dragging .cn-dot.drag-target {
+  transform: scale(1.1);
+  box-shadow: 0 0 0 1px #111, 0 0 0 4px rgba(204, 0, 0, 0.45);
+}
+.channel-nodes.dragging .cn-dot.drag-dimmed {
+  opacity: 0.3;
+}
+
+/* SVG overlay for connection lines */
 .channel-nodes #cn-svg {
   position: absolute;
   top: 0;
@@ -165,43 +189,107 @@
   pointer-events: none;
 }
 
-/* Buttons */
-.channel-nodes .btn-row {
+/* Actions */
+.channel-nodes .actions {
   display: flex;
-  gap: 14px;
+  gap: 12px;
   align-items: center;
-  margin-bottom: 10px;
 }
 
-.channel-nodes button {
-  padding: 8px 22px;
-  border: 2px solid #111;
-  background: #fff;
-  color: #111;
-  box-shadow: 3px 3px 0 #111;
-  font-size: 0.9rem;
+/* Channel strength sliders */
+.channel-nodes .strength {
+  background: #eee;
+  border: 1px solid #aaa;
+  padding: 14px 18px;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.channel-nodes .strength-title {
+  font-size: 0.8rem;
   font-weight: 700;
+  text-transform: uppercase;
   letter-spacing: 0.05em;
+  color: #555;
+  margin-right: 4px;
+}
+.channel-nodes .strength-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 220px;
+}
+.channel-nodes .strength-row label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  width: 28px;
+  text-align: center;
+}
+.channel-nodes .strength-row label.r { color: #cc0000; }
+.channel-nodes .strength-row label.g { color: #27ae60; }
+.channel-nodes .strength-row label.b { color: #2980b9; }
+.channel-nodes .strength-row input[type="range"] {
+  flex: 1;
+  accent-color: #cc0000;
+}
+.channel-nodes .strength-row output {
+  font-size: 0.8rem;
+  color: #555;
+  min-width: 40px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.channel-nodes .strength-reset {
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
   text-transform: uppercase;
   cursor: pointer;
-  transition: box-shadow 0.1s, transform 0.1s;
+  border: 1px solid #111;
+  background: #fff;
+  color: #111;
 }
-.channel-nodes button:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 #111; }
-.channel-nodes button:active {
-  transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0 #111;
+.channel-nodes .strength-reset:hover { background: #f5f5f5; }
+
+.channel-nodes button {
+  padding: 8px 24px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: 2px solid #111;
+  background: #cc0000;
+  color: #fff;
 }
+.channel-nodes button:hover { background: #aa0000; }
 .channel-nodes button:disabled {
   background: #ccc;
+  border-color: #888;
   color: #888;
   cursor: not-allowed;
-  box-shadow: 3px 3px 0 #aaa;
-  transform: none;
 }
 
-/* Status line */
+/* Status */
 .channel-nodes .status {
   font-size: 0.85rem;
   color: #555;
   min-height: 1.4em;
 }
+
+.channel-nodes .status .conn-pill {
+  display: inline-block;
+  background: #ddd;
+  color: #333;
+  padding: 1px 8px;
+  margin: 0 3px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+}
+.channel-nodes .status .conn-pill.r { background: #f4cccc; }
+.channel-nodes .status .conn-pill.g { background: #cdeacd; }
+.channel-nodes .status .conn-pill.b { background: #c9daf0; }
