@@ -224,25 +224,32 @@
     const out = ctxOut.createImageData(w, h);
     const dst = out.data;
 
-    // No connections yet → leave output blank.
+    // No connections → blank output.
     if (connections.length === 0) {
       ctxOut.clearRect(0, 0, w, h);
       ctxOut.putImageData(out, 0, 0);
       return;
     }
 
-    // Show the first (or only) connected input channel as a greyscale image.
-    const first = connections[0];
-    if (first.from.dataset.side !== 'in') return;
-    const ch = first.from.dataset.channel as 'r' | 'g' | 'b';
+    // Each output channel is sourced from whichever input channel is
+    // routed to it (Blender-style). Unrouted outputs stay at 0.
     const chIndex = { r: 0, g: 1, b: 2 } as const;
+    const map: Record<'r' | 'g' | 'b', 'r' | 'g' | 'b' | null> = {
+      r: null, g: null, b: null,
+    };
+
+    for (const conn of connections) {
+      if (conn.from.dataset.side === 'in' && conn.to.dataset.side === 'out') {
+        map[conn.to.dataset.channel as 'r' | 'g' | 'b'] =
+          conn.from.dataset.channel as 'r' | 'g' | 'b';
+      }
+    }
 
     for (let i = 0; i < src.length; i += 4) {
-      const v = src[i + chIndex[ch]];
-      dst[i] = v;
-      dst[i + 1] = v;
-      dst[i + 2] = v;
-      dst[i + 3] = 255;
+      dst[i] = map.r !== null ? src[i + chIndex[map.r]] : 0;
+      dst[i + 1] = map.g !== null ? src[i + chIndex[map.g]] : 0;
+      dst[i + 2] = map.b !== null ? src[i + chIndex[map.b]] : 0;
+      dst[i + 3] = src[i + 3];
     }
 
     ctxOut.putImageData(out, 0, 0);
