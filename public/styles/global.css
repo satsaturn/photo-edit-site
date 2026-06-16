@@ -56,6 +56,19 @@ body {
   white-space: nowrap;
 }
 
+.app-header__home {
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.app-header__home:hover {
+  text-decoration: underline;
+}
+
+.app-header__home[aria-current='page'] {
+  color: var(--text-muted);
+}
+
 .app-sidebar {
   grid-area: sidebar;
   background-color: var(--bg-sidebar);

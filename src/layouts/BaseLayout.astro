@@ -32,15 +32,12 @@ const base = import.meta.env.BASE_URL;
   <body>
     <div class="app-shell">
       <header class="app-header">
-        <span>Photo Edit Site</span>
+        <a href={base} class="app-header__home" aria-current={currentPath === base ? 'page' : undefined}>Photo Edit Site</a>
       </header>
 
       <aside class="app-sidebar">
         <nav aria-label="Tools">
           <ul class="tool-list">
-            <li>
-              <a href={base} aria-current={currentPath === base ? 'page' : undefined}>Home</a>
-            </li>
             {tools.map((tool) => {
               const href = `${base}${tool.path}`;
               return (

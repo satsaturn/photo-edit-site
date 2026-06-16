@@ -26,10 +26,13 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const convertBtn = document.getElementById('dither-convert');
-  const downloadBtn = document.getElementById('dither-download');
+  const resetBtn = document.getElementById('dither-reset');
   const headerDownloadBtn = document.getElementById('dither-header-download');
   const clearInputBtn = document.getElementById('dither-clear-input');
   const statusEl = document.getElementById('dither-status');
+
+  const inputFullscreenBtn = document.querySelector('[data-target="dither-input-preview"]');
+  const outputFullscreenBtn = document.querySelector('[data-target="dither-output-preview"]');
 
   const fullscreenOverlay = document.getElementById('dither-fullscreen-overlay');
   const fullscreenImg = document.getElementById('dither-fullscreen-img');
@@ -69,6 +72,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const hasOutput = outputPreview.style.display === 'block';
     clearInputBtn.disabled = !hasInput;
     headerDownloadBtn.disabled = !hasOutput;
+    inputFullscreenBtn.disabled = !hasInput;
+    outputFullscreenBtn.disabled = !hasOutput;
   }
 
   function clearInput() {
@@ -81,7 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
     outputPreview.style.display = 'none';
     document.getElementById('dither-output-placeholder').style.display = 'block';
     convertBtn.disabled = true;
-    downloadBtn.style.display = 'none';
     setStatus('Load an image to get started.');
     updateHeaderButtons();
   }
@@ -192,8 +196,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   clearInputBtn.addEventListener('click', clearInput);
+  resetBtn.addEventListener('click', clearInput);
   headerDownloadBtn.addEventListener('click', doDownload);
-  downloadBtn.addEventListener('click', doDownload);
 
   fullscreenClose.addEventListener('click', closeFullscreen);
   fullscreenOverlay.addEventListener('click', (e) => {
@@ -413,7 +417,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         outCanvas.toBlob(blob => {
           outputBlob = blob;
-          downloadBtn.style.display = 'inline-block';
           updateHeaderButtons();
         }, 'image/png');
 
@@ -430,3 +433,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
   updateHeaderButtons();
 });
+
