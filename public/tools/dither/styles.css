@@ -38,6 +38,16 @@
   flex-direction: column;
 }
 
+/* Input and output panels are wider; settings panel is narrower. */
+.dither-tool .panel:nth-child(1),
+.dither-tool .panel:nth-child(3) {
+  flex: 2 1 0;
+}
+
+.dither-tool .panel:nth-child(2) {
+  flex: 1 1 0;
+}
+
 .dither-tool .panel-label {
   font-size: 0.8rem;
   font-weight: 700;
@@ -60,8 +70,13 @@
   overflow: hidden;
   width: 100%;
   aspect-ratio: 4 / 3;
-  max-height: 55vh;
+  max-height: 70vh;
   padding: 16px;
+}
+
+/* Tighter padding in the centre settings panel. */
+.dither-tool .panel:nth-child(2) .panel-body {
+  padding: 12px;
 }
 
 .dither-tool .drop-zone {
