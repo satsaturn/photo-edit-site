@@ -22,19 +22,37 @@ document.addEventListener('DOMContentLoaded', () => {
     paletteSizeNum: document.getElementById('dither-palette-size-n'),
     pixelScale: document.getElementById('dither-pixel-scale'),
     pixelScaleNum: document.getElementById('dither-pixel-scale-n'),
+    bayerSize: document.getElementById('dither-bayer-size'),
   };
 
   const convertBtn = document.getElementById('dither-convert');
   const downloadBtn = document.getElementById('dither-download');
   const statusEl = document.getElementById('dither-status');
 
-  // 4x4 Bayer matrix, normalized to 0..1.
-  const BAYER_4X4 = [
-    [0, 8, 2, 10],
-    [12, 4, 14, 6],
-    [3, 11, 1, 9],
-    [15, 7, 13, 5],
-  ].map(row => row.map(v => v / 16));
+  // Generate Bayer threshold matrices of any power-of-two size.
+  function generateBayer(size) {
+    if (size < 2 || (size & (size - 1)) !== 0) throw new Error('Bayer size must be a power of 2');
+    let m = [[0, 2], [3, 1]];
+    while (m.length < size) {
+      const n = m.length;
+      const next = Array.from({ length: n * 2 }, () => new Array(n * 2).fill(0));
+      for (let y = 0; y < n * 2; y++) {
+        for (let x = 0; x < n * 2; x++) {
+          const quadrant = (y >= n ? 2 : 0) + (x >= n ? 1 : 0);
+          next[y][x] = m[y % n][x % n] * 4 + [0, 2, 3, 1][quadrant];
+        }
+      }
+      m = next;
+    }
+    const max = size * size;
+    return m.map(row => row.map(v => v / max));
+  }
+
+  const BAYER_MATRICES = {
+    4: generateBayer(4),
+    8: generateBayer(8),
+    16: generateBayer(16),
+  };
 
   function setStatus(msg) {
     statusEl.textContent = msg;
@@ -64,6 +82,11 @@ document.addEventListener('DOMContentLoaded', () => {
   controls.originalRes.addEventListener('change', () => {
     controls.targetWidth.disabled = controls.originalRes.checked;
     controls.targetWidthNum.disabled = controls.originalRes.checked;
+  });
+
+  controls.algorithm.addEventListener('change', () => {
+    const isBayer = controls.algorithm.value === 'bayer';
+    controls.bayerSize.disabled = !isBayer;
   });
 
   // --- Image upload ---
@@ -164,10 +187,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function applyBayer(data, width, height, palette) {
+    const matrix = BAYER_MATRICES[controls.bayerSize.value];
+    const size = matrix.length;
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
         const i = (y * width + x) * 4;
-        const threshold = BAYER_4X4[y % 4][x % 4];
+        const threshold = matrix[y % size][x % size];
         const r = clamp(data[i] + (threshold - 0.5) * 255);
         const g = clamp(data[i + 1] + (threshold - 0.5) * 255);
         const b = clamp(data[i + 2] + (threshold - 0.5) * 255);

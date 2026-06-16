@@ -39,6 +39,15 @@
         </div>
 
         <div class="setting">
+          <label for="dither-bayer-size">Bayer Size</label>
+          <select id="dither-bayer-size">
+            <option value="4">4 × 4</option>
+            <option value="8" selected>8 × 8</option>
+            <option value="16">16 × 16</option>
+          </select>
+        </div>
+
+        <div class="setting">
           <label for="dither-palette-size">Palette Size</label>
           <input type="range" id="dither-palette-size" min="8" max="64" step="1" value="16" />
           <input type="number" id="dither-palette-size-n" min="8" max="64" step="1" value="16" />
