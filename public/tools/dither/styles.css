@@ -69,6 +69,12 @@
   gap: 8px;
 }
 
+.dither-tool .panel-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .dither-tool .panel-header span {
   flex: 1;
   text-align: center;
@@ -225,8 +231,8 @@
 /* Settings */
 .dither-tool .settings {
   display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
+  flex-wrap: nowrap;
+  gap: 24px;
   background: var(--dither-bg);
   border: 1px solid var(--dither-border);
   padding: 16px;
@@ -236,8 +242,8 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  flex: 1;
-  min-width: 160px;
+  flex: 1 1 0;
+  min-width: 0;
 }
 
 .dither-tool .setting label {
@@ -280,6 +286,41 @@
 
 .dither-tool .setting.checkbox input {
   width: auto;
+}
+
+.dither-tool .setting-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.dither-tool .setting-label-row > label {
+  margin: 0;
+}
+
+.dither-tool .checkbox-inline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--dither-muted);
+}
+
+.dither-tool .checkbox-inline input {
+  width: auto;
+  margin: 0;
+}
+
+.dither-tool .setting-hint {
+  font-size: 0.7rem;
+  color: var(--dither-muted);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
 }
 
 /* Actions */

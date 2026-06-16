@@ -57,10 +57,6 @@
           <input type="number" id="dither-palette-size-n" min="8" max="64" step="1" value="16" />
         </div>
 
-        <div class="setting checkbox">
-          <input type="checkbox" id="dither-original-res" />
-          <label for="dither-original-res">Use original resolution</label>
-        </div>
       </div>
     </div>
 
@@ -82,12 +78,21 @@
 
   <div class="settings">
     <div class="setting">
-      <label for="dither-target-width">Target Width</label>
+      <div class="setting-label-row">
+        <label for="dither-target-width">Target Width</label>
+        <span class="checkbox-inline">
+          <label for="dither-original-res">Use original resolution</label>
+          <input type="checkbox" id="dither-original-res" />
+        </span>
+      </div>
       <input type="range" id="dither-target-width" min="32" max="512" step="16" value="128" />
       <input type="number" id="dither-target-width-n" min="32" max="512" step="16" value="128" />
     </div>
     <div class="setting">
-      <label for="dither-pixel-scale">Pixel Scale</label>
+      <div class="setting-label-row">
+        <label for="dither-pixel-scale">Pixel Scale</label>
+        <span class="setting-hint">Set scale to 1 if using original resolution</span>
+      </div>
       <input type="range" id="dither-pixel-scale" min="1" max="12" step="1" value="4" />
       <input type="number" id="dither-pixel-scale-n" min="1" max="12" step="1" value="4" />
     </div>
@@ -98,7 +103,7 @@
     <button class="reset-btn" id="dither-reset">Reset</button>
   </div>
 
-  <div class="status" id="dither-status">Load an image to get started.</div>
+  <div class="status" id="dither-status"></div>
 
   <canvas id="dither-work-canvas"></canvas>
 

@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
     outputPreview.style.display = 'none';
     document.getElementById('dither-output-placeholder').style.display = 'block';
     convertBtn.disabled = true;
-    setStatus('Load an image to get started.');
+    setStatus('');
     updateHeaderButtons();
   }
 

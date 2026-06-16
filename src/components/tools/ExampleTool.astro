@@ -24,7 +24,11 @@
   <div class="panels">
     <!-- INPUT PANEL: file upload, drag-and-drop, or source selector -->
     <div class="panel panel-input">
-      <div class="panel-label">Input</div>
+      <div class="panel-header">
+        <button class="panel-btn" title="Fullscreen (placeholder)">⛶</button>
+        <span>Input</span>
+        <button class="panel-btn" title="Clear (placeholder)">✕</button>
+      </div>
       <div class="panel-body">
         <p>Source / upload area</p>
       </div>
@@ -34,13 +38,27 @@
     <div class="panel panel-control">
       <div class="panel-label">Control</div>
       <div class="panel-body">
-        <p>Main controls go here</p>
+        <div class="setting">
+          <label>Control A</label>
+          <select>
+            <option>Option 1</option>
+            <option>Option 2</option>
+          </select>
+        </div>
+        <div class="setting">
+          <label>Control B</label>
+          <input type="range" min="0" max="100" value="50" />
+        </div>
       </div>
     </div>
 
     <!-- OUTPUT PANEL: preview or result -->
     <div class="panel panel-output">
-      <div class="panel-label">Output</div>
+      <div class="panel-header">
+        <button class="panel-btn" title="Fullscreen (placeholder)">⛶</button>
+        <span>Output</span>
+        <button class="panel-btn" title="Download (placeholder)">↓</button>
+      </div>
       <div class="panel-body">
         <p>Result / preview area</p>
       </div>
@@ -62,74 +80,165 @@
   <!-- ACTION BUTTONS -->
   <div class="actions">
     <button>Run</button>
+    <button class="reset-btn">Reset</button>
   </div>
 </div>
 
 <style>
-  /* Scoped to .example-tool — no conflicts with layout or other tools. */
+  /* Scoped to .example-tool — no conflicts with layout or other tools.
+     Inspired by the Dither tool styling. */
+
   .example-tool {
+    --example-accent: #cc0000;
+    --example-bg: #eee;
+    --example-border: #aaa;
+    --example-muted: #666;
+
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
     width: 100%;
+  }
+
+  .example-tool h2 {
+    margin: 0;
   }
 
   .example-tool .description {
-    color: #666;
+    margin: 0;
+    color: var(--example-muted);
     font-size: 0.85rem;
   }
 
-  /* Three panels side by side */
+  /* Three-panel layout */
   .example-tool .panels {
     display: flex;
-    gap: 12px;
+    gap: 16px;
     width: 100%;
+    align-items: stretch;
   }
 
   .example-tool .panel {
-    flex: 1;
+    flex: 1 1 0;
+    min-width: 0;
     display: flex;
     flex-direction: column;
   }
 
-  .example-tool .panel-label {
+  /* Input and output panels are wider; control panel is narrower. */
+  .example-tool .panel-input,
+  .example-tool .panel-output {
+    flex: 2 1 0;
+  }
+
+  .example-tool .panel-control {
+    flex: 1 1 0;
+  }
+
+  /* Panel headers and labels share the same height. */
+  .example-tool .panel-label,
+  .example-tool .panel-header {
     font-size: 0.8rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    padding: 6px 10px;
-    background: #aaa;
+    min-height: 40px;
+    box-sizing: border-box;
+    padding: 6px 12px;
+    background: var(--example-border);
     color: #fff;
     text-align: center;
   }
 
-  .example-tool .panel-body {
-    background: #eee;
-    border: 1px solid #aaa;
-    border-top: none;
-    padding: 16px;
-    min-height: 160px;
+  .example-tool .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .example-tool .panel-label {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #888;
+  }
+
+  .example-tool .panel-header span {
+    flex: 1;
+    text-align: center;
+  }
+
+  .example-tool .panel-btn {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid #fff;
+    background: transparent;
+    color: #fff;
+    line-height: 1;
+  }
+
+  .example-tool .panel-btn:hover {
+    background: #fff;
+    color: var(--example-border);
+  }
+
+  .example-tool .panel-body {
+    background: var(--example-bg);
+    border: 1px solid var(--example-border);
+    border-top: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    max-height: 70vh;
+    padding: 16px;
+    color: #888;
+    font-size: 0.9rem;
+  }
+
+  /* Image-style panels keep their aspect ratio and do not stretch. */
+  .example-tool .panel-input .panel-body,
+  .example-tool .panel-output .panel-body {
+    flex: 0 0 auto;
+  }
+
+  /* Control panel stretches to match image panel height. */
+  .example-tool .panel-control .panel-body {
+    flex: 1;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px;
+    aspect-ratio: auto;
   }
 
   /* Settings bar below panels */
   .example-tool .settings {
     display: flex;
+    flex-wrap: wrap;
     gap: 16px;
-    background: #eee;
-    border: 1px solid #aaa;
-    padding: 12px 16px;
+    background: var(--example-bg);
+    border: 1px solid var(--example-border);
+    padding: 16px;
   }
 
   .example-tool .setting {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
     flex: 1;
+    min-width: 160px;
   }
 
   .example-tool .setting label {
@@ -139,15 +248,28 @@
     letter-spacing: 0.04em;
   }
 
-  .example-tool input[type="range"] {
+  .example-tool .setting select,
+  .example-tool .setting input[type="range"] {
     width: 100%;
-    accent-color: #cc0000;
+  }
+
+  .example-tool .setting select {
+    padding: 6px 8px;
+    font-size: 0.85rem;
+    border: 2px solid #111;
+    background: #fff;
+  }
+
+  .example-tool .setting input[type="range"] {
+    accent-color: var(--example-accent);
   }
 
   /* Action buttons */
   .example-tool .actions {
     display: flex;
     gap: 12px;
+    align-items: center;
+    justify-content: center;
   }
 
   .example-tool button {
@@ -157,11 +279,29 @@
     text-transform: uppercase;
     cursor: pointer;
     border: 2px solid #111;
-    background: #cc0000;
+    background: var(--example-accent);
     color: #fff;
   }
 
   .example-tool button:hover {
     background: #aa0000;
+  }
+
+  .example-tool .actions .reset-btn {
+    padding: 4px 12px;
+    font-size: 0.7rem;
+    background: #fff;
+    color: #111;
+  }
+
+  .example-tool .actions .reset-btn:hover {
+    background: #f5f5f5;
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .example-tool .panels {
+      flex-direction: column;
+    }
   }
 </style>
