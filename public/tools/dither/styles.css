@@ -28,7 +28,7 @@
   display: flex;
   gap: 16px;
   width: 100%;
-  align-items: flex-start;
+  align-items: stretch;
 }
 
 .dither-tool .panel {
@@ -74,9 +74,21 @@
   padding: 16px;
 }
 
-/* Tighter padding in the centre settings panel. */
+/* Image panels keep their aspect ratio and do not stretch. */
+.dither-tool .panel:nth-child(1) .panel-body,
+.dither-tool .panel:nth-child(3) .panel-body {
+  flex: 0 0 auto;
+}
+
+/* Centre settings panel stretches to match image panel height. */
 .dither-tool .panel:nth-child(2) .panel-body {
+  flex: 1;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 12px;
   padding: 12px;
+  aspect-ratio: auto;
 }
 
 .dither-tool .drop-zone {
