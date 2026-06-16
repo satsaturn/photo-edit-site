@@ -6,7 +6,7 @@
   const CH_INDEX = { r: 0, g: 1, b: 2 };
 
   self.onmessage = function (e) {
-    const { src, dst, width, height, connections, strengths } = e.data;
+    const { src, dst, width, height, connections, strengths, usePreview } = e.data;
 
     // Build list of source channel indices for each output channel.
     const outSources = { r: [], g: [], b: [] };
@@ -52,6 +52,6 @@
       dst[i + 3] = src[i + 3];
     }
 
-    self.postMessage({ dst, width, height }, [dst.buffer]);
+    self.postMessage({ dst, width, height, usePreview }, [dst.buffer]);
   };
 })();

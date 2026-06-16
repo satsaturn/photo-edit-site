@@ -252,6 +252,22 @@ document.addEventListener('DOMContentLoaded', () => {
     return palette[best];
   }
 
+  function nearestTwoColours(r, g, b, palette) {
+    let best = 0, bestD = Infinity;
+    let second = 1, secondD = Infinity;
+    for (let i = 0; i < palette.length; i++) {
+      const dr = r - palette[i][0], dg = g - palette[i][1], db = b - palette[i][2];
+      const d = dr * dr + dg * dg + db * db;
+      if (d < bestD) {
+        second = best; secondD = bestD;
+        best = i; bestD = d;
+      } else if (d < secondD) {
+        second = i; secondD = d;
+      }
+    }
+    return [palette[best], palette[second], bestD, secondD];
+  }
+
   // --- Dithering algorithms ---
   function clamp(v) { return Math.max(0, Math.min(255, Math.round(v))); }
 
@@ -273,11 +289,12 @@ document.addEventListener('DOMContentLoaded', () => {
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
         const i = (y * width + x) * 4;
+        const r = data[i], g = data[i + 1], b = data[i + 2];
         const threshold = matrix[y % size][x % size];
-        const r = clamp(data[i] + (threshold - 0.5) * 255);
-        const g = clamp(data[i + 1] + (threshold - 0.5) * 255);
-        const b = clamp(data[i + 2] + (threshold - 0.5) * 255);
-        const [nr, ng, nb] = nearestColour(r, g, b, palette);
+        const [c1, c2, d1, d2] = nearestTwoColours(r, g, b, palette);
+        // Pixels closer to c1 use c1 more often; pixels closer to c2 use c2 more often.
+        const chooseC1 = threshold < (d2 / (d1 + d2));
+        const [nr, ng, nb] = chooseC1 ? c1 : c2;
         data[i] = nr; data[i + 1] = ng; data[i + 2] = nb;
       }
     }
