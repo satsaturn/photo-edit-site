@@ -363,6 +363,12 @@
   // Public entry point for all channel processing.
   // usePreview=true requests the down-scaled preview; false requests full resolution.
   function scheduleProcess(usePreview) {
+    if (!originalData) {
+      // Lines can be drawn before an image is loaded; there is nothing to
+      // process yet. Wait until loadImage() provides pixel data.
+      pendingJob = null;
+      return;
+    }
     if (!usePreview) requiresFull = true;
 
     if (connections.length === 0) {
