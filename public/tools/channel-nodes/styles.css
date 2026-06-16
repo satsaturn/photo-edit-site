@@ -70,9 +70,7 @@
   width: 28px;
   height: 28px;
   padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: relative;
   font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
@@ -80,6 +78,13 @@
   background: transparent;
   color: #fff;
   line-height: 1;
+}
+
+.channel-nodes .panel-btn span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .channel-nodes .panel-btn:hover {
@@ -105,7 +110,7 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   width: 100%;
   aspect-ratio: 4 / 3;
   max-height: 70vh;
@@ -138,7 +143,7 @@
   max-height: 100%;
   object-fit: contain;
   position: relative;
-  z-index: 1;
+  z-index: 3;
   cursor: zoom-in;
 }
 .channel-nodes canvas#cn-output-canvas {
@@ -295,12 +300,21 @@
   right: 16px;
   width: 40px;
   height: 40px;
+  padding: 0;
   font-size: 1.2rem;
   font-weight: 700;
   cursor: pointer;
   border: 2px solid #fff;
   background: transparent;
   color: #fff;
+  line-height: 1;
+}
+
+.channel-nodes .fullscreen-close span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .channel-nodes .fullscreen-close:hover {

@@ -14,9 +14,9 @@
     <!-- INPUT -->
     <div class="panel panel-input">
       <div class="panel-header">
-        <button class="panel-btn fullscreen-btn" data-target="cn-input-canvas" title="Fullscreen">⛶</button>
+        <button class="panel-btn fullscreen-btn" data-target="cn-input-canvas" title="Fullscreen"><span>⛶</span></button>
         <span>Source Image</span>
-        <button class="panel-btn clear-btn" id="cn-clear-input" title="Clear input">✕</button>
+        <button class="panel-btn clear-btn" id="cn-clear-input" title="Clear input"><span>✕</span></button>
       </div>
       <div class="panel-body drop-zone" id="cn-input-zone">
         <input type="file" id="cn-upload" accept="image/*" />
@@ -36,9 +36,9 @@
     <!-- OUTPUT -->
     <div class="panel panel-output">
       <div class="panel-header">
-        <button class="panel-btn fullscreen-btn" data-target="cn-output-canvas" title="Fullscreen">⛶</button>
+        <button class="panel-btn fullscreen-btn" data-target="cn-output-canvas" title="Fullscreen"><span>⛶</span></button>
         <span>Output</span>
-        <button class="panel-btn download-btn" id="cn-header-download" title="Download output">↓</button>
+        <button class="panel-btn download-btn" id="cn-header-download" title="Download output"><span>↓</span></button>
       </div>
       <div class="panel-body drop-zone drop-zone-readonly">
         <canvas id="cn-output-canvas"></canvas>
@@ -86,7 +86,7 @@
 
   <!-- Fullscreen lightbox overlay -->
   <div class="fullscreen-overlay" id="cn-fullscreen-overlay">
-    <button class="fullscreen-close" id="cn-fullscreen-close" title="Close">✕</button>
+    <button class="fullscreen-close" id="cn-fullscreen-close" title="Close"><span>✕</span></button>
     <img id="cn-fullscreen-img" src="" alt="fullscreen preview" />
   </div>
 </div>

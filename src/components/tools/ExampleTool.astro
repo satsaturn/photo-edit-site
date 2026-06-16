@@ -25,9 +25,9 @@
     <!-- INPUT PANEL: file upload, drag-and-drop, or source selector -->
     <div class="panel panel-input">
       <div class="panel-header">
-        <button class="panel-btn" title="Fullscreen (placeholder)">⛶</button>
+        <button class="panel-btn" title="Fullscreen (placeholder)"><span>⛶</span></button>
         <span>Input</span>
-        <button class="panel-btn" title="Clear (placeholder)">✕</button>
+        <button class="panel-btn" title="Clear (placeholder)"><span>✕</span></button>
       </div>
       <div class="panel-body">
         <p>Source / upload area</p>
@@ -55,9 +55,9 @@
     <!-- OUTPUT PANEL: preview or result -->
     <div class="panel panel-output">
       <div class="panel-header">
-        <button class="panel-btn" title="Fullscreen (placeholder)">⛶</button>
+        <button class="panel-btn" title="Fullscreen (placeholder)"><span>⛶</span></button>
         <span>Output</span>
-        <button class="panel-btn" title="Download (placeholder)">↓</button>
+        <button class="panel-btn" title="Download (placeholder)"><span>↓</span></button>
       </div>
       <div class="panel-body">
         <p>Result / preview area</p>
@@ -172,9 +172,7 @@
     width: 28px;
     height: 28px;
     padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    position: relative;
     font-size: 0.85rem;
     font-weight: 700;
     cursor: pointer;
@@ -182,6 +180,13 @@
     background: transparent;
     color: #fff;
     line-height: 1;
+  }
+
+  .example-tool .panel-btn span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 
   .example-tool .panel-btn:hover {
