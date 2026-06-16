@@ -22,7 +22,7 @@
 .channel-nodes .panels {
   position: relative;
   display: flex;
-  gap: 36px;
+  gap: 80px;
   width: 100%;
   align-items: flex-start;
   justify-content: center;
