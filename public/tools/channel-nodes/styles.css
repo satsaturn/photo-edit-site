@@ -1,10 +1,17 @@
-/* Channel Nodes — scoped under .channel-nodes. Matches the project's
-   standard light-grey, minimal style (see ExampleTool.astro). */
+:root {
+  --cn-accent: #cc0000;
+  --cn-bg: #eee;
+  --cn-border: #aaa;
+  --cn-text: #222;
+  --cn-muted: #666;
+}
+
+/* Channel Nodes — scoped under .channel-nodes. Matches Dither/Example Tool. */
 
 .channel-nodes {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
   width: 100%;
 }
 
@@ -14,11 +21,11 @@
 
 .channel-nodes .description {
   margin: 0;
-  color: #666;
+  color: var(--cn-muted);
   font-size: 0.85rem;
 }
 
-/* Panels row */
+/* Two-panel layout with a wide centre gap for connection lines. */
 .channel-nodes .panels {
   position: relative;
   display: flex;
@@ -36,29 +43,72 @@
   position: relative;
 }
 
-.channel-nodes .panel-label {
+/* Panel headers share the same height as Dither's labels. */
+.channel-nodes .panel-header {
   font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  padding: 6px 10px;
-  background: #aaa;
+  min-height: 40px;
+  box-sizing: border-box;
+  padding: 6px 12px;
+  background: var(--cn-border);
   color: #fff;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.channel-nodes .panel-header span {
+  flex: 1;
   text-align: center;
 }
 
+.channel-nodes .panel-btn {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid #fff;
+  background: transparent;
+  color: #fff;
+  line-height: 1;
+}
+
+.channel-nodes .panel-btn:hover {
+  background: #fff;
+  color: var(--cn-border);
+}
+
+.channel-nodes .panel-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.channel-nodes .panel-btn:disabled:hover {
+  background: transparent;
+  color: #fff;
+}
+
 .channel-nodes .panel-body {
-  background: #eee;
-  border: 1px solid #aaa;
+  background: var(--cn-bg);
+  border: 1px solid var(--cn-border);
   border-top: none;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  overflow: visible;
+  overflow: hidden;
   width: 100%;
   aspect-ratio: 4 / 3;
-  max-height: 60vh;
+  max-height: 70vh;
   padding: 16px;
 }
 
@@ -69,6 +119,7 @@
 }
 .channel-nodes .drop-zone:hover { background: #f5f5f5; }
 .channel-nodes .drop-zone-readonly { cursor: default; }
+.channel-nodes .drop-zone-readonly:hover { background: var(--cn-bg); }
 
 .channel-nodes .drop-zone input[type="file"] {
   position: absolute;
@@ -85,14 +136,25 @@
   display: none;
   max-width: 100%;
   max-height: 100%;
+  object-fit: contain;
   position: relative;
   z-index: 1;
+  cursor: zoom-in;
 }
 .channel-nodes canvas#cn-output-canvas {
   max-width: 100%;
   max-height: 100%;
+  object-fit: contain;
   position: relative;
   z-index: 1;
+  cursor: zoom-in;
+}
+
+.channel-nodes .zone-placeholder {
+  color: #888;
+  font-size: 0.9rem;
+  text-align: center;
+  pointer-events: none;
 }
 
 .channel-nodes .preview-badge {
@@ -114,13 +176,6 @@
 }
 .channel-nodes .preview-active .preview-badge {
   opacity: 1;
-}
-
-.channel-nodes .zone-placeholder {
-  color: #888;
-  font-size: 0.85rem;
-  text-align: center;
-  pointer-events: none;
 }
 
 /* Channel dots — on the box outline */
@@ -211,54 +266,89 @@
   pointer-events: none;
 }
 
-/* Actions */
-.channel-nodes .actions {
-  display: flex;
-  gap: 12px;
+/* Fullscreen lightbox overlay */
+.channel-nodes .fullscreen-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.92);
   align-items: center;
+  justify-content: center;
+  padding: 32px;
 }
 
-/* Channel strength sliders */
-.channel-nodes .strength {
-  background: #eee;
-  border: 1px solid #aaa;
-  padding: 14px 18px;
+.channel-nodes .fullscreen-overlay.active {
   display: flex;
-  gap: 24px;
-  align-items: center;
-  flex-wrap: wrap;
 }
-.channel-nodes .strength-title {
+
+.channel-nodes .fullscreen-overlay img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.channel-nodes .fullscreen-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 2px solid #fff;
+  background: transparent;
+  color: #fff;
+}
+
+.channel-nodes .fullscreen-close:hover {
+  background: #fff;
+  color: #000;
+}
+
+/* Settings bar below panels */
+.channel-nodes .settings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  background: var(--cn-bg);
+  border: 1px solid var(--cn-border);
+  padding: 16px;
+}
+
+.channel-nodes .setting {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.channel-nodes .setting label {
   font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #555;
-  margin-right: 4px;
+  letter-spacing: 0.04em;
 }
-.channel-nodes .strength-row {
+
+.channel-nodes .setting label.r { color: #cc0000; }
+.channel-nodes .setting label.g { color: #27ae60; }
+.channel-nodes .setting label.b { color: #2980b9; }
+
+.channel-nodes .setting-row {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.channel-nodes .setting-row input[type="range"] {
   flex: 1;
-  min-width: 220px;
+  accent-color: var(--cn-accent);
 }
-.channel-nodes .strength-row label {
-  font-size: 0.85rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  width: 28px;
-  text-align: center;
-}
-.channel-nodes .strength-row label.r { color: #cc0000; }
-.channel-nodes .strength-row label.g { color: #27ae60; }
-.channel-nodes .strength-row label.b { color: #2980b9; }
-.channel-nodes .strength-row input[type="range"] {
-  flex: 1;
-  accent-color: #cc0000;
-}
-.channel-nodes .strength-row output {
+
+.channel-nodes .setting-row output {
   font-size: 0.8rem;
   color: #555;
   min-width: 40px;
@@ -266,17 +356,13 @@
   font-variant-numeric: tabular-nums;
 }
 
-.channel-nodes .strength-reset {
-  padding: 4px 12px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  cursor: pointer;
-  border: 1px solid #111;
-  background: #fff;
-  color: #111;
+/* Actions */
+.channel-nodes .actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
 }
-.channel-nodes .strength-reset:hover { background: #f5f5f5; }
 
 .channel-nodes button {
   padding: 8px 24px;
@@ -285,15 +371,30 @@
   text-transform: uppercase;
   cursor: pointer;
   border: 2px solid #111;
-  background: #cc0000;
+  background: var(--cn-accent);
   color: #fff;
 }
-.channel-nodes button:hover { background: #aa0000; }
+
+.channel-nodes button:hover {
+  background: #aa0000;
+}
+
 .channel-nodes button:disabled {
   background: #ccc;
   border-color: #888;
   color: #888;
   cursor: not-allowed;
+}
+
+.channel-nodes .actions .reset-btn {
+  padding: 4px 12px;
+  font-size: 0.7rem;
+  background: #fff;
+  color: #111;
+}
+
+.channel-nodes .actions .reset-btn:hover {
+  background: #f5f5f5;
 }
 
 /* Status */
@@ -315,3 +416,11 @@
 .channel-nodes .status .conn-pill.r { background: #f4cccc; }
 .channel-nodes .status .conn-pill.g { background: #cdeacd; }
 .channel-nodes .status .conn-pill.b { background: #c9daf0; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .channel-nodes .panels {
+    flex-direction: column;
+    gap: 24px;
+  }
+}

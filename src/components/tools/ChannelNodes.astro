@@ -12,8 +12,12 @@
 
   <div class="panels" id="cn-panels">
     <!-- INPUT -->
-    <div class="panel">
-      <div class="panel-label">Source Image</div>
+    <div class="panel panel-input">
+      <div class="panel-header">
+        <button class="panel-btn fullscreen-btn" data-target="cn-input-canvas" title="Fullscreen">⛶</button>
+        <span>Source Image</span>
+        <button class="panel-btn clear-btn" id="cn-clear-input" title="Clear input">✕</button>
+      </div>
       <div class="panel-body drop-zone" id="cn-input-zone">
         <input type="file" id="cn-upload" accept="image/*" />
         <canvas id="cn-input-canvas"></canvas>
@@ -30,8 +34,12 @@
     </div>
 
     <!-- OUTPUT -->
-    <div class="panel">
-      <div class="panel-label">Output</div>
+    <div class="panel panel-output">
+      <div class="panel-header">
+        <button class="panel-btn fullscreen-btn" data-target="cn-output-canvas" title="Fullscreen">⛶</button>
+        <span>Output</span>
+        <button class="panel-btn download-btn" id="cn-header-download" title="Download output">↓</button>
+      </div>
       <div class="panel-body drop-zone drop-zone-readonly">
         <canvas id="cn-output-canvas"></canvas>
         <div class="preview-badge" id="cn-preview-badge">Preview</div>
@@ -46,28 +54,39 @@
     <svg id="cn-svg" width="100%" height="100%"></svg>
   </div>
 
-  <div class="strength">
-    <span class="strength-title">Channel Strength</span>
-    <div class="strength-row">
-      <label class="r" for="cn-str-r">R</label>
-      <input type="range" id="cn-str-r" min="0" max="2" step="0.01" value="1" />
-      <output id="cn-str-r-out">1.00</output>
+  <div class="settings">
+    <div class="setting">
+      <label class="r" for="cn-str-r">Red Strength</label>
+      <div class="setting-row">
+        <input type="range" id="cn-str-r" min="0" max="2" step="0.01" value="1" />
+        <output id="cn-str-r-out">1.00</output>
+      </div>
     </div>
-    <div class="strength-row">
-      <label class="g" for="cn-str-g">G</label>
-      <input type="range" id="cn-str-g" min="0" max="2" step="0.01" value="1" />
-      <output id="cn-str-g-out">1.00</output>
+    <div class="setting">
+      <label class="g" for="cn-str-g">Green Strength</label>
+      <div class="setting-row">
+        <input type="range" id="cn-str-g" min="0" max="2" step="0.01" value="1" />
+        <output id="cn-str-g-out">1.00</output>
+      </div>
     </div>
-    <div class="strength-row">
-      <label class="b" for="cn-str-b">B</label>
-      <input type="range" id="cn-str-b" min="0" max="2" step="0.01" value="1" />
-      <output id="cn-str-b-out">1.00</output>
+    <div class="setting">
+      <label class="b" for="cn-str-b">Blue Strength</label>
+      <div class="setting-row">
+        <input type="range" id="cn-str-b" min="0" max="2" step="0.01" value="1" />
+        <output id="cn-str-b-out">1.00</output>
+      </div>
     </div>
-    <button id="cn-reset-strength" class="strength-reset" title="Reset strengths to 1">Reset</button>
   </div>
 
   <div class="actions">
-    <button id="cn-reset">Reset</button>
+    <button class="reset-btn" id="cn-reset">Reset</button>
   </div>
+
   <div class="status" id="cn-status"></div>
+
+  <!-- Fullscreen lightbox overlay -->
+  <div class="fullscreen-overlay" id="cn-fullscreen-overlay">
+    <button class="fullscreen-close" id="cn-fullscreen-close" title="Close">✕</button>
+    <img id="cn-fullscreen-img" src="" alt="fullscreen preview" />
+  </div>
 </div>

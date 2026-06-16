@@ -20,7 +20,6 @@
   const workspace = document.querySelector('.channel-nodes');
   const statusEl = document.getElementById('cn-status');
   const resetBtn = document.getElementById('cn-reset');
-  const strengthResetBtn = document.getElementById('cn-reset-strength');
 
   const ctxIn = inputCanvas.getContext('2d');
   const ctxOut = outputCanvas.getContext('2d');
@@ -36,6 +35,15 @@
     g: document.getElementById('cn-str-g-out'),
     b: document.getElementById('cn-str-b-out'),
   };
+
+  // Header buttons and fullscreen overlay.
+  const clearInputBtn = document.getElementById('cn-clear-input');
+  const headerDownloadBtn = document.getElementById('cn-header-download');
+  const inputFullscreenBtn = document.querySelector('[data-target="cn-input-canvas"]');
+  const outputFullscreenBtn = document.querySelector('[data-target="cn-output-canvas"]');
+  const fullscreenOverlay = document.getElementById('cn-fullscreen-overlay');
+  const fullscreenImg = document.getElementById('cn-fullscreen-img');
+  const fullscreenClose = document.getElementById('cn-fullscreen-close');
 
   let originalData = null;
   let previewData = null;
@@ -140,6 +148,7 @@
         renderConnections();
         scheduleProcess(false);
         updateMappedDots();
+        updateHeaderButtons();
         updateStatus();
       });
       svg.appendChild(hit);
@@ -205,6 +214,7 @@
       inputPlaceholder.style.display = 'none';
       scheduleProcess(false);
       requestAnimationFrame(renderConnections);
+      updateHeaderButtons();
       updateStatus();
     };
     img.onerror = () => {
@@ -278,6 +288,7 @@
 
     const { dst, width, height, usePreview } = e.data;
     displayResult(dst, width, height, usePreview);
+    updateHeaderButtons();
 
     if (pendingJob) {
       const next = pendingJob;
@@ -346,6 +357,7 @@
 
     ctxOut.putImageData(out, 0, 0);
     if (outputPanel) outputPanel.classList.toggle('preview-active', usePreview);
+    updateHeaderButtons();
   }
 
   // Public entry point for all channel processing.
@@ -392,6 +404,57 @@
       .join(' &nbsp; ');
     const n = connections.length;
     setStatus(`${n} connection${n === 1 ? '' : 's'}: ${pills} &nbsp; <i>click a line to remove</i>`);
+  }
+
+  // ===== HEADER BUTTONS =====
+  function updateHeaderButtons() {
+    const hasInput = !!originalData;
+    const hasOutput = hasInput && connections.length > 0;
+    if (clearInputBtn) clearInputBtn.disabled = !hasInput;
+    if (headerDownloadBtn) headerDownloadBtn.disabled = !hasOutput;
+    if (inputFullscreenBtn) inputFullscreenBtn.disabled = !hasInput;
+    if (outputFullscreenBtn) outputFullscreenBtn.disabled = !hasOutput;
+  }
+
+  function clearInput() {
+    originalData = null;
+    previewData = null;
+    inputCanvas.width = 0;
+    inputCanvas.height = 0;
+    inputCanvas.style.display = 'none';
+    inputPlaceholder.style.display = 'block';
+    outputCanvas.width = 0;
+    outputCanvas.height = 0;
+    if (outputPanel) outputPanel.classList.remove('preview-active');
+    fileInput.value = '';
+    updateHeaderButtons();
+    updateStatus();
+  }
+
+  function doDownload() {
+    if (!originalData || connections.length === 0) return;
+    outputCanvas.toBlob((blob) => {
+      if (!blob) return;
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'channel-nodes.png';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }, 'image/png');
+  }
+
+  function openFullscreen(canvas) {
+    if (!canvas || canvas.style.display === 'none' || canvas.width === 0) return;
+    fullscreenImg.src = canvas.toDataURL('image/png');
+    fullscreenOverlay.classList.add('active');
+  }
+
+  function closeFullscreen() {
+    fullscreenOverlay.classList.remove('active');
+    fullscreenImg.src = '';
   }
 
   // File input handling.
@@ -473,17 +536,23 @@
       renderConnections();
       scheduleProcess(false);
       updateMappedDots();
+      updateHeaderButtons();
       updateStatus();
     }
   });
 
-  // Escape cancels an in-progress drag.
+  // Escape cancels an in-progress drag or closes fullscreen.
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && dragging && tempLine) {
-      tempLine.remove();
-      tempLine = null;
-      dragging = null;
-      clearDragStates();
+    if (e.key === 'Escape') {
+      if (dragging && tempLine) {
+        tempLine.remove();
+        tempLine = null;
+        dragging = null;
+        clearDragStates();
+      }
+      if (fullscreenOverlay && fullscreenOverlay.classList.contains('active')) {
+        closeFullscreen();
+      }
     }
   });
 
@@ -501,17 +570,38 @@
     renderConnections();
     scheduleProcess(false);
     updateMappedDots();
+    updateHeaderButtons();
     updateStatus();
   });
 
-  // Strength-only reset.
-  strengthResetBtn.addEventListener('click', () => {
-    resetStrengths();
-    scheduleProcess(false);
+  // Header button listeners.
+  if (clearInputBtn) clearInputBtn.addEventListener('click', clearInput);
+  if (headerDownloadBtn) headerDownloadBtn.addEventListener('click', doDownload);
+  [inputFullscreenBtn, outputFullscreenBtn].forEach((btn) => {
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.target);
+      openFullscreen(target);
+    });
+  });
+  if (fullscreenClose) fullscreenClose.addEventListener('click', closeFullscreen);
+  if (fullscreenOverlay) {
+    fullscreenOverlay.addEventListener('click', (e) => {
+      if (e.target === fullscreenOverlay || e.target === fullscreenImg) closeFullscreen();
+    });
+  }
+
+  // Click canvases to open fullscreen.
+  [inputCanvas, outputCanvas].forEach((canvas) => {
+    if (!canvas) return;
+    canvas.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openFullscreen(canvas);
+    });
   });
 
   // ===== SLIDER HANDLING =====
-  const strengthEl = document.querySelector('.channel-nodes .strength');
+  const strengthEl = document.querySelector('.channel-nodes .settings');
 
   function updateSliderLabel(input) {
     if (!(input && input.tagName === 'INPUT' && input.type === 'range' && input.id.startsWith('cn-str-') && !input.id.endsWith('-out'))) return;
@@ -567,6 +657,7 @@
   // Initial sync once the layout settles.
   requestAnimationFrame(() => {
     syncSvg();
+    updateHeaderButtons();
     updateStatus();
   });
 })();

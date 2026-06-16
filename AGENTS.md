@@ -24,7 +24,7 @@ Add new tools by:
 
 Tool layout pattern (see `ExampleTool.astro` for a full reference):
 ```
-[ Input ]  [ Main Control ]  [ Output ]
+[ Input ]  [ Options ]  [ Output ]
          [ Settings below ]
 ```
 
@@ -32,6 +32,11 @@ Tool-specific CSS/JS:
 - Static assets (CSS, JS, fonts) go in `public/tools/<tool-name>/`
 - Load them via `<link slot="head">` and `<script src="" defer>` in the page component
 - Scope all CSS under `.tool-name` to avoid conflicts with the layout
+
+Tool UI conventions (see `DitherTool.astro` for a working example):
+- Panel headers can contain action buttons (e.g. fullscreen, clear, download)
+- Image panels use an in-page lightbox overlay for fullscreen inspection
+- Actions are centred with a primary button and a small secondary reset button
 
 ## Styling
 
@@ -50,4 +55,6 @@ Tool-specific CSS/JS:
 - [x] Basic structure and layout
 - [x] Example tool placeholder
 - [x] Pixelate tool (Pixless Camera Emulator)
+- [x] Channel Nodes tool
+- [x] Dither tool (Bayer, Floyd–Steinberg, Atkinson, Threshold)
 - [ ] More effects
