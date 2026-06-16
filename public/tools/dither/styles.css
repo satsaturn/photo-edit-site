@@ -48,7 +48,8 @@
   flex: 1 1 0;
 }
 
-.dither-tool .panel-label {
+.dither-tool .panel-label,
+.dither-tool .panel-header {
   font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -57,6 +58,44 @@
   background: var(--dither-border);
   color: #fff;
   text-align: center;
+}
+
+.dither-tool .panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.dither-tool .panel-header span {
+  flex: 1;
+  text-align: center;
+}
+
+.dither-tool .panel-btn {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid #fff;
+  background: transparent;
+  color: #fff;
+  line-height: 1;
+}
+
+.dither-tool .panel-btn:hover {
+  background: #fff;
+  color: var(--dither-border);
+}
+
+.dither-tool .panel-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .dither-tool .panel-body {
@@ -126,6 +165,54 @@
 
 .dither-tool canvas#dither-work-canvas {
   display: none;
+}
+
+/* Preview images are clickable for fullscreen. */
+.dither-tool .zone-preview {
+  cursor: zoom-in;
+  z-index: 3;
+}
+
+/* Fullscreen lightbox overlay */
+.dither-tool .fullscreen-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.92);
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+}
+
+.dither-tool .fullscreen-overlay.active {
+  display: flex;
+}
+
+.dither-tool .fullscreen-overlay img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.dither-tool .fullscreen-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 2px solid #fff;
+  background: transparent;
+  color: #fff;
+}
+
+.dither-tool .fullscreen-close:hover {
+  background: #fff;
+  color: #000;
 }
 
 /* Settings */

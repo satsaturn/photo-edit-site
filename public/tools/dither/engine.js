@@ -27,7 +27,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const convertBtn = document.getElementById('dither-convert');
   const downloadBtn = document.getElementById('dither-download');
+  const headerDownloadBtn = document.getElementById('dither-header-download');
+  const clearInputBtn = document.getElementById('dither-clear-input');
   const statusEl = document.getElementById('dither-status');
+
+  const fullscreenOverlay = document.getElementById('dither-fullscreen-overlay');
+  const fullscreenImg = document.getElementById('dither-fullscreen-img');
+  const fullscreenClose = document.getElementById('dither-fullscreen-close');
 
   // Generate Bayer threshold matrices of any power-of-two size.
   function generateBayer(size) {
@@ -56,6 +62,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function setStatus(msg) {
     statusEl.textContent = msg;
+  }
+
+  function updateHeaderButtons() {
+    const hasInput = !!srcImage;
+    const hasOutput = outputPreview.style.display === 'block';
+    clearInputBtn.disabled = !hasInput;
+    headerDownloadBtn.disabled = !hasOutput;
+  }
+
+  function clearInput() {
+    srcImage = null;
+    outputBlob = null;
+    inputPreview.src = '';
+    inputPreview.style.display = 'none';
+    inputPlaceholder.style.display = 'block';
+    outputPreview.src = '';
+    outputPreview.style.display = 'none';
+    document.getElementById('dither-output-placeholder').style.display = 'block';
+    convertBtn.disabled = true;
+    downloadBtn.style.display = 'none';
+    setStatus('Load an image to get started.');
+    updateHeaderButtons();
+  }
+
+  function doDownload() {
+    if (!outputBlob) return;
+    const url = URL.createObjectURL(outputBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'dithered.png';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function openFullscreen(imgElement) {
+    if (!imgElement || imgElement.style.display === 'none' || !imgElement.src) return;
+    fullscreenImg.src = imgElement.src;
+    fullscreenOverlay.classList.add('active');
+  }
+
+  function closeFullscreen() {
+    fullscreenOverlay.classList.remove('active');
+    fullscreenImg.src = '';
   }
 
   // --- Slider / number sync ---
@@ -101,6 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
       inputPlaceholder.style.display = 'none';
       convertBtn.disabled = false;
       setStatus('Image loaded. Hit Dither!');
+      updateHeaderButtons();
     };
     img.onerror = () => {
       URL.revokeObjectURL(url);
@@ -120,6 +172,35 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     inputZone.classList.remove('drag-active');
     if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+  });
+
+  // Click an image to fullscreen it; prevent browser context menu on images.
+  [inputPreview, outputPreview].forEach(img => {
+    img.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openFullscreen(img);
+    });
+    img.addEventListener('contextmenu', (e) => e.preventDefault());
+  });
+
+  // Header buttons.
+  document.querySelectorAll('.fullscreen-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.target);
+      openFullscreen(target);
+    });
+  });
+
+  clearInputBtn.addEventListener('click', clearInput);
+  headerDownloadBtn.addEventListener('click', doDownload);
+  downloadBtn.addEventListener('click', doDownload);
+
+  fullscreenClose.addEventListener('click', closeFullscreen);
+  fullscreenOverlay.addEventListener('click', (e) => {
+    if (e.target === fullscreenOverlay || e.target === fullscreenImg) closeFullscreen();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeFullscreen();
   });
 
   // --- Palette generation (median cut) ---
@@ -316,6 +397,7 @@ document.addEventListener('DOMContentLoaded', () => {
         outCanvas.toBlob(blob => {
           outputBlob = blob;
           downloadBtn.style.display = 'inline-block';
+          updateHeaderButtons();
         }, 'image/png');
 
         setStatus(`Done! ${outW}x${outH}px · ${algorithm}`);
@@ -329,15 +411,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
   convertBtn.addEventListener('click', convert);
 
-  downloadBtn.addEventListener('click', () => {
-    if (!outputBlob) return;
-    const url = URL.createObjectURL(outputBlob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'dithered.png';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  });
+  updateHeaderButtons();
 });

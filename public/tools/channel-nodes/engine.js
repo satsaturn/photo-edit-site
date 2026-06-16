@@ -266,9 +266,18 @@
   }
 
   function handleWorkerMessage(e) {
+    workerBusy = false;
+
+    // If connections were cleared while this job was in flight, discard the result.
+    if (connections.length === 0) {
+      clearOutput();
+      pendingJob = null;
+      requiresFull = false;
+      return;
+    }
+
     const { dst, width, height, usePreview } = e.data;
     displayResult(dst, width, height, usePreview);
-    workerBusy = false;
 
     if (pendingJob) {
       const next = pendingJob;
