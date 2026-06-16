@@ -34,19 +34,19 @@
       </div>
     </div>
 
-    <!-- MAIN CONTROL PANEL: the primary tool controls -->
-    <div class="panel panel-control">
-      <div class="panel-label">Control</div>
+    <!-- OPTIONS PANEL: the primary tool controls -->
+    <div class="panel panel-options">
+      <div class="panel-label">Options</div>
       <div class="panel-body">
         <div class="setting">
-          <label>Control A</label>
+          <label>Option A</label>
           <select>
             <option>Option 1</option>
             <option>Option 2</option>
           </select>
         </div>
         <div class="setting">
-          <label>Control B</label>
+          <label>Option B</label>
           <input type="range" min="0" max="100" value="50" />
         </div>
       </div>
@@ -131,7 +131,7 @@
     flex: 2 1 0;
   }
 
-  .example-tool .panel-control {
+  .example-tool .panel-options {
     flex: 1 1 0;
   }
 
@@ -212,8 +212,8 @@
     flex: 0 0 auto;
   }
 
-  /* Control panel stretches to match image panel height. */
-  .example-tool .panel-control .panel-body {
+  /* Options panel stretches to match image panel height. */
+  .example-tool .panel-options .panel-body {
     flex: 1;
     flex-direction: column;
     align-items: stretch;
