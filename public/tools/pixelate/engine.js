@@ -134,44 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function nearestColor(r, g, b, pal) {
-    let best = 0, bestD = Infinity;
-    for (let i = 0; i < pal.length; i++) {
-      const dr = r - pal[i][0], dg = g - pal[i][1], db = b - pal[i][2];
-      const d = dr * dr + dg * dg + db * db;
-      if (d < bestD) { bestD = d; best = i; }
-    }
-    return pal[best];
-  }
-
-  function medianCut(pixels, n) {
-    function cut(bk) {
-      if (!bk.length) return [[128, 128, 128]];
-      let mn = [255, 255, 255], mx = [0, 0, 0];
-      for (const p of bk)
-        for (let c = 0; c < 3; c++) {
-          if (p[c] < mn[c]) mn[c] = p[c];
-          if (p[c] > mx[c]) mx[c] = p[c];
-        }
-      const ranges = mx.map((v, i) => v - mn[i]);
-      const ch = ranges.indexOf(Math.max(...ranges));
-      bk.sort((a, b) => a[ch] - b[ch]);
-      const mid = bk.length >> 1;
-      return [bk.slice(0, mid), bk.slice(mid)];
-    }
-    let buckets = [pixels];
-    while (buckets.length < n) {
-      buckets.sort((a, b) => b.length - a.length);
-      const [a, b] = cut(buckets.shift());
-      if (a.length) buckets.push(a);
-      if (b.length) buckets.push(b);
-    }
-    return buckets.map(bk => {
-      const avg = bk.reduce((acc, p) => [acc[0] + p[0], acc[1] + p[1], acc[2] + p[2]], [0, 0, 0]);
-      return avg.map(v => Math.round(v / bk.length));
-    });
-  }
-
   // --- Convert ---
   function convert() {
     if (!srcImage) return;
@@ -196,11 +158,13 @@ document.addEventListener('DOMContentLoaded', () => {
         let pal = palette;
         if (!pal) {
           const samples = [];
-          for (let i = 0; i < data.length; i += 4) samples.push([data[i], data[i + 1], data[i + 2]]);
-          pal = medianCut(samples, pSize);
+          // Sample every 4th pixel for palette generation; fast and still representative.
+          for (let i = 0; i < data.length; i += 16) samples.push([data[i], data[i + 1], data[i + 2]]);
+          pal = window.PhotoEditPalette.buildPalette(samples, pSize);
         }
+        const labPal = window.PhotoEditPalette.makeLabPalette(pal);
         for (let i = 0; i < data.length; i += 4) {
-          const [r, g, b] = nearestColor(data[i], data[i + 1], data[i + 2], pal);
+          const [r, g, b] = window.PhotoEditPalette.nearestColorLab(data[i], data[i + 1], data[i + 2], labPal);
           data[i] = r; data[i + 1] = g; data[i + 2] = b;
         }
         ctx.putImageData(imgData, 0, 0);

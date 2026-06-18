@@ -42,7 +42,8 @@
   const inputFullscreenBtn = document.querySelector('[data-target="cn-input-canvas"]');
   const outputFullscreenBtn = document.querySelector('[data-target="cn-output-canvas"]');
   const fullscreenOverlay = document.getElementById('cn-fullscreen-overlay');
-  const fullscreenImg = document.getElementById('cn-fullscreen-img');
+  const fullscreenCanvas = document.getElementById('cn-fullscreen-canvas');
+  const fullscreenCtx = fullscreenCanvas && fullscreenCanvas.getContext('2d');
   const fullscreenClose = document.getElementById('cn-fullscreen-close');
 
   let originalData = null;
@@ -453,14 +454,21 @@
   }
 
   function openFullscreen(canvas) {
-    if (!canvas || canvas.style.display === 'none' || canvas.width === 0) return;
-    fullscreenImg.src = canvas.toDataURL('image/png');
+    if (!canvas || canvas.style.display === 'none' || canvas.width === 0 || !fullscreenCanvas || !fullscreenCtx) return;
+    // Copy the source canvas directly instead of encoding it to a PNG data URL,
+    // which was blocking the main thread and causing a laggy fullscreen open.
+    fullscreenCanvas.width = canvas.width;
+    fullscreenCanvas.height = canvas.height;
+    fullscreenCtx.clearRect(0, 0, fullscreenCanvas.width, fullscreenCanvas.height);
+    fullscreenCtx.drawImage(canvas, 0, 0);
     fullscreenOverlay.classList.add('active');
   }
 
   function closeFullscreen() {
     fullscreenOverlay.classList.remove('active');
-    fullscreenImg.src = '';
+    if (fullscreenCtx) {
+      fullscreenCtx.clearRect(0, 0, fullscreenCanvas.width, fullscreenCanvas.height);
+    }
   }
 
   // File input handling.
@@ -593,7 +601,7 @@
   if (fullscreenClose) fullscreenClose.addEventListener('click', closeFullscreen);
   if (fullscreenOverlay) {
     fullscreenOverlay.addEventListener('click', (e) => {
-      if (e.target === fullscreenOverlay || e.target === fullscreenImg) closeFullscreen();
+      if (e.target === fullscreenOverlay || e.target === fullscreenCanvas) closeFullscreen();
     });
   }
 

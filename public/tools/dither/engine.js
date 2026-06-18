@@ -77,6 +77,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function clearInput() {
+    if (srcObjectUrl) {
+      URL.revokeObjectURL(srcObjectUrl);
+      srcObjectUrl = null;
+    }
     srcImage = null;
     outputBlob = null;
     inputPreview.src = '';
@@ -145,13 +149,15 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // --- Image upload ---
+  let srcObjectUrl = null;
+
   function handleFile(file) {
-    const url = URL.createObjectURL(file);
+    if (srcObjectUrl) URL.revokeObjectURL(srcObjectUrl);
+    srcObjectUrl = URL.createObjectURL(file);
     const img = new Image();
     img.onload = () => {
-      URL.revokeObjectURL(url);
       srcImage = img;
-      inputPreview.src = img.src;
+      inputPreview.src = srcObjectUrl;
       inputPreview.style.display = 'block';
       inputPlaceholder.style.display = 'none';
       convertBtn.disabled = false;
@@ -159,10 +165,11 @@ document.addEventListener('DOMContentLoaded', () => {
       updateHeaderButtons();
     };
     img.onerror = () => {
-      URL.revokeObjectURL(url);
+      URL.revokeObjectURL(srcObjectUrl);
+      srcObjectUrl = null;
       setStatus('Could not load image.');
     };
-    img.src = url;
+    img.src = srcObjectUrl;
   }
 
   upload.addEventListener('change', () => {
@@ -207,71 +214,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Escape') closeFullscreen();
   });
 
-  // --- Palette generation (median cut) ---
-  function medianCut(pixels, n) {
-    function cut(bucket) {
-      if (!bucket.length) return [[128, 128, 128]];
-      let mn = [255, 255, 255], mx = [0, 0, 0];
-      for (const p of bucket) {
-        for (let c = 0; c < 3; c++) {
-          if (p[c] < mn[c]) mn[c] = p[c];
-          if (p[c] > mx[c]) mx[c] = p[c];
-        }
-      }
-      const ranges = mx.map((v, i) => v - mn[i]);
-      const ch = ranges.indexOf(Math.max(...ranges));
-      bucket.sort((a, b) => a[ch] - b[ch]);
-      const mid = bucket.length >> 1;
-      return [bucket.slice(0, mid), bucket.slice(mid)];
-    }
-    let buckets = [pixels];
-    while (buckets.length < n) {
-      buckets.sort((a, b) => b.length - a.length);
-      const [a, b] = cut(buckets.shift());
-      if (a.length) buckets.push(a);
-      if (b.length) buckets.push(b);
-    }
-    return buckets.map(bucket => {
-      const avg = bucket.reduce((acc, p) => [acc[0] + p[0], acc[1] + p[1], acc[2] + p[2]], [0, 0, 0]);
-      return avg.map(v => Math.round(v / bucket.length));
-    });
-  }
-
-  function buildPalette(data, size) {
-    const samples = [];
-    // Sample every 4th pixel to keep it fast on large images.
-    for (let i = 0; i < data.length; i += 16) {
-      samples.push([data[i], data[i + 1], data[i + 2]]);
-    }
-    return medianCut(samples, size);
-  }
-
-  function nearestColour(r, g, b, palette) {
-    let best = 0, bestD = Infinity;
-    for (let i = 0; i < palette.length; i++) {
-      const dr = r - palette[i][0], dg = g - palette[i][1], db = b - palette[i][2];
-      const d = dr * dr + dg * dg + db * db;
-      if (d < bestD) { bestD = d; best = i; }
-    }
-    return palette[best];
-  }
-
-  function nearestTwoColours(r, g, b, palette) {
-    let best = 0, bestD = Infinity;
-    let second = 1, secondD = Infinity;
-    for (let i = 0; i < palette.length; i++) {
-      const dr = r - palette[i][0], dg = g - palette[i][1], db = b - palette[i][2];
-      const d = dr * dr + dg * dg + db * db;
-      if (d < bestD) {
-        second = best; secondD = bestD;
-        best = i; bestD = d;
-      } else if (d < secondD) {
-        second = i; secondD = d;
-      }
-    }
-    return [palette[best], palette[second], bestD, secondD];
-  }
-
   // --- Dithering algorithms ---
   function clamp(v) { return Math.max(0, Math.min(255, Math.round(v))); }
 
@@ -287,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function applyBayer(data, width, height, palette) {
+  function applyBayer(data, width, height, labPalette) {
     const matrix = BAYER_MATRICES[controls.bayerSize.value];
     const size = matrix.length;
     for (let y = 0; y < height; y++) {
@@ -295,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const i = (y * width + x) * 4;
         const r = data[i], g = data[i + 1], b = data[i + 2];
         const threshold = matrix[y % size][x % size];
-        const [c1, c2, d1, d2] = nearestTwoColours(r, g, b, palette);
+        const [c1, c2, d1, d2] = window.PhotoEditPalette.nearestTwoColoursLab(r, g, b, labPalette);
         // Pixels closer to c1 use c1 more often; pixels closer to c2 use c2 more often.
         const chooseC1 = threshold < (d2 / (d1 + d2));
         const [nr, ng, nb] = chooseC1 ? c1 : c2;
@@ -304,7 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function applyFloydSteinberg(data, width, height, palette) {
+  function applyFloydSteinberg(data, width, height, labPalette) {
     // Work in floating-point to accumulate error.
     const buf = new Float32Array(data.length);
     for (let i = 0; i < data.length; i++) buf[i] = data[i];
@@ -313,7 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
       for (let x = 0; x < width; x++) {
         const i = (y * width + x) * 4;
         const oldR = buf[i], oldG = buf[i + 1], oldB = buf[i + 2];
-        const [nr, ng, nb] = nearestColour(oldR, oldG, oldB, palette);
+        const [nr, ng, nb] = window.PhotoEditPalette.nearestColorLab(oldR, oldG, oldB, labPalette);
         data[i] = nr; data[i + 1] = ng; data[i + 2] = nb;
 
         const er = oldR - nr, eg = oldG - ng, eb = oldB - nb;
@@ -333,7 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function applyAtkinson(data, width, height, palette) {
+  function applyAtkinson(data, width, height, labPalette) {
     const buf = new Float32Array(data.length);
     for (let i = 0; i < data.length; i++) buf[i] = data[i];
 
@@ -341,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
       for (let x = 0; x < width; x++) {
         const i = (y * width + x) * 4;
         const oldR = buf[i], oldG = buf[i + 1], oldB = buf[i + 2];
-        const [nr, ng, nb] = nearestColour(oldR, oldG, oldB, palette);
+        const [nr, ng, nb] = window.PhotoEditPalette.nearestColorLab(oldR, oldG, oldB, labPalette);
         data[i] = nr; data[i + 1] = ng; data[i + 2] = nb;
 
         const er = (oldR - nr) / 8;
@@ -393,10 +335,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (algorithm === 'threshold') {
           applyThreshold(data, tW, tH);
         } else {
-          const palette = buildPalette(data, paletteSize);
-          if (algorithm === 'bayer') applyBayer(data, tW, tH, palette);
-          else if (algorithm === 'floyd-steinberg') applyFloydSteinberg(data, tW, tH, palette);
-          else if (algorithm === 'atkinson') applyAtkinson(data, tW, tH, palette);
+          const samples = [];
+          // Sample every 4th pixel to keep palette generation fast on large images.
+          for (let i = 0; i < data.length; i += 16) {
+            samples.push([data[i], data[i + 1], data[i + 2]]);
+          }
+          const rgbPalette = window.PhotoEditPalette.buildPalette(samples, paletteSize);
+          const labPalette = window.PhotoEditPalette.makeLabPalette(rgbPalette);
+          if (algorithm === 'bayer') applyBayer(data, tW, tH, labPalette);
+          else if (algorithm === 'floyd-steinberg') applyFloydSteinberg(data, tW, tH, labPalette);
+          else if (algorithm === 'atkinson') applyAtkinson(data, tW, tH, labPalette);
         }
 
         ctx.putImageData(imgData, 0, 0);
