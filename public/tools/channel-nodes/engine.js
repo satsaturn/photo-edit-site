@@ -444,12 +444,12 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'channel-nodes.png';
+      a.download = 'channel-nodes.jpg';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(url), 1000);
-    }, 'image/png');
+    }, 'image/jpeg');
   }
 
   function openFullscreen(canvas) {
